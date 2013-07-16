@@ -1,0 +1,8 @@
+[core]
+	editor = vim
+[alias]
+  hist = log --oneline --name-status --graph
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[user]
+	name = Christopher Bertsch
+	email = git@chrisbertsch.net

@@ -1,0 +1,7 @@
+BoldAsFont=no
+Term=xterm-256color
+Transparency=off
+OpaqueWhenFocused=no
+FontHeight=10
+AllowBlinking=yes
+Scrollbar=none

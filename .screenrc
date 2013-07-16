@@ -1,0 +1,6 @@
+term screen-256color
+autodetach on
+startup_message off
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%{= kw}[%{= kg}%H%{= kw}][%= %{= kw}%?%-Lw%?%{= kW}%n*%f %t%?%?%{= kw}%?%+Lw%?%?%=][%{r}%l%{w}]%{w}[%{r}%Y-%m-%d %0c:%s%{w}]%{w}"
