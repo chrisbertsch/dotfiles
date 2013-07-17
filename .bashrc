@@ -50,6 +50,8 @@ fi
 # SSH alias with forwarding
 alias ssh='ssh -A'
 alias xssh='ssh -X'
+alias zssh='ssh -C'
+alias xzssh='ssh -X -C'
 
 # Set LS_COLORS
 if [ -e "/usr/bin/dircolors" ] ; then
@@ -131,7 +133,7 @@ _ssh_hosts()
 	COMPREPLY=($(compgen -W "${opts}" ${cur}))
 }
 
-complete -F _ssh_hosts ssh xssh
+complete -F _ssh_hosts ssh xssh zssh xzssh
 
 # Start SSH agent
 start_ssh_agent()
