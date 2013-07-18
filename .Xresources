@@ -1,0 +1,6 @@
+*customization: -color
+Xterm*loginShell: true
+XTerm*termName: xterm-256color
+XTerm*dynamiccolors: true
+XTerm*locale: true
+Xterm*saveLines: 5000
