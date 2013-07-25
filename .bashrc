@@ -114,8 +114,6 @@ if [ -d "$HOME/bin" ] ; then
 	PATH=$HOME/bin:$PATH
 fi
 
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
-
 # SSH tab complete function
 _ssh_hosts()
 {
@@ -180,19 +178,7 @@ extract() {
 	fi
 }
 
-# extract tab complete function
-_extract()
-{
-	local prev cur opts
-	prev="${COMP_WORDS[COMP_CWORD-1]}"
-	cur="${COMP_WORDS[COMP_CWORD]}"
-	opts=$(find -maxdepth 1 -name \*.tar.bz2 -o -name \*.tar.gz -o -name \*.bz2 -o -name \*.rar -o -name \*.gz -o -name \*.tar -o -name \*.tbz2 -o -name \*.tgz -o -name \*.zip -o -name \*.Z -o -name \*.7z)
-	COMPREPLY=($(compgen -W "${opts}" ${cur}))
-}
-
-
-
-complete -F _extract extract
+complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 
 # Include .bashrc-env if it exists for environment specific settings
 if [ -f "$HOME/.bashrc-env" ] ; then
