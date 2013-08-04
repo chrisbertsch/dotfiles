@@ -17,9 +17,6 @@ C14="\[\033[1;36m\]"	# seagreen (bold)
 C15="\[\033[0;37m\]"	# grey or regular white
 C16="\[\033[1;37m\]"	# white (bold)
 
-PS1="${C15}[${C05}\u${C09}@${C05}\h${C09}:${C08}\w${C15}]${C09}#${C00} "
-PS2="${C06}>${C00} "
-
 ################################################
 
 export OS_TYPE=`uname`
@@ -102,12 +99,42 @@ esac
 # Change screen/tmux window and xterm title names
 case $TERM in
 	screen*)
-		PROMPT_COMMAND='echo -ne "\033k$HOST_NAME\033\\"'
+		PROMPT_COMMAND='_prompt_builder; echo -ne "\033k$HOST_NAME\033\\"'
 		;;
 	xterm*)
-		PROMPT_COMMAND='echo -ne "\033]0;$HOST_NAME\007"'
+		PROMPT_COMMAND='_prompt_builder; echo -ne "\033]0;$HOST_NAME\007"'
+		;;
+	*)
+		PROMPT_COMMAND='_prompt_builder;'
 		;;
 esac
+
+# Prompt builder
+_prompt_builder()
+{
+	EXITSTATUS=$?
+
+	if [ $USER = "root" ] ; then
+		USERPROMPT="${C03}#"
+	else
+		USERPROMPT="${C09}>"
+	fi
+
+	if [ -w $PWD ] ; then
+		PWDCOLOR="${C08}"
+	else
+		PWDCOLOR="${C11}"
+	fi
+
+	if [ "${EXITSTATUS}" -ne 0 ] ; then
+		EXITCODE="${C03}[${EXITSTATUS}]"
+	else
+		EXITCODE=""
+	fi
+
+	PS1="${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
+	PS2="${C06}>${C00} "
+}
 
 # Set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
@@ -149,7 +176,7 @@ start_ssh_agent()
 reset_ssh_agent()
 {
 	if [[ -n $TMUX ]]; then
-		NEW_SSH_AUTH_SOCK=`tmux showenv|grep '^SSH_AUTH_SOCK' |cut -d = -f 2`
+		NEW_SSH_AUTH_SOCK=`tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2`
 		if [[ -n $NEW_SSH_AUTH_SOCK ]] && [[ -S $NEW_SSH_AUTH_SOCK ]] ; then
 			SSH_AUTH_SOCK=$NEW_SSH_AUTH_SOCK
 		fi
