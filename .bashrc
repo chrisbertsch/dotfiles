@@ -32,6 +32,9 @@ shopt -s cdspell
 export HISTSIZE=2000
 export HISTIGNORE='&:exit:*shutdown*:*reboot*'
 export HISTCONTROL='ignoreboth'
+export HISTTIMEFORMAT='%F %T '
+shopt -s cmdhist
+shopt -s histappend
 
 # Enable bash completion
 if [ -f "/etc/bash_completion" ] ; then
@@ -95,7 +98,6 @@ case $OS_TYPE in
 		alias grep='ggrep --color=auto'
 		;;
 esac
-
 
 # Dynamic prompt
 PROMPT_COMMAND='_prompt_builder;'
