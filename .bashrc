@@ -96,36 +96,33 @@ case $OS_TYPE in
 		;;
 esac
 
-# Change screen/tmux window and xterm title names
-case $TERM in
-	screen*)
-		PROMPT_COMMAND='_prompt_builder; echo -ne "\033k$HOST_NAME\033\\"'
-		;;
-	xterm*)
-		PROMPT_COMMAND='_prompt_builder; echo -ne "\033]0;$HOST_NAME\007"'
-		;;
-	*)
-		PROMPT_COMMAND='_prompt_builder;'
-		;;
-esac
+
+# Dynamic prompt
+PROMPT_COMMAND='_prompt_builder;'
 
 # Prompt builder
 _prompt_builder()
 {
 	EXITSTATUS=$?
-
-	if [ $USER = "root" ] ; then
+	# Change prompt if root
+	if [ $USER == "root" ] ; then
 		USERPROMPT="${C03}#"
 	else
 		USERPROMPT="${C09}>"
 	fi
-
+	# Change title to include user if sudoed
+	if [ -z $SUDO_USER ] ; then
+		TITLE=$HOST_NAME
+	else
+		TITLE="$USER@$HOST_NAME"
+	fi
+	# Change working directory color if writable
 	if [ -w $PWD ] ; then
 		PWDCOLOR="${C08}"
 	else
 		PWDCOLOR="${C11}"
 	fi
-
+	# Show exit status if not zero
 	if [ "${EXITSTATUS}" -ne 0 ] ; then
 		EXITCODE="${C03}[${EXITSTATUS}]"
 	else
@@ -134,6 +131,16 @@ _prompt_builder()
 
 	PS1="${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
 	PS2="${C06}>${C00} "
+
+	# Change screen/tmux window and xterm title names
+	case $TERM in
+        	screen*)
+			echo -ne "\033k$TITLE\033\\"
+			;;
+		xterm*)
+			echo -ne "\033]0;$TITLE\007"
+			;;
+	esac
 }
 
 # Set PATH so it includes user's private bin if it exists
@@ -175,7 +182,7 @@ start_ssh_agent()
 # Reset SSH agent after detaching and reattaching tmux
 reset_ssh_agent()
 {
-	if [[ -n $TMUX ]]; then
+	if [[ -n $TMUX ]] ; then
 		NEW_SSH_AUTH_SOCK=`tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2`
 		if [[ -n $NEW_SSH_AUTH_SOCK ]] && [[ -S $NEW_SSH_AUTH_SOCK ]] ; then
 			SSH_AUTH_SOCK=$NEW_SSH_AUTH_SOCK
