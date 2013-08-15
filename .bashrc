@@ -19,7 +19,6 @@ C16="\[\033[1;37m\]"	# white (bold)
 
 ################################################
 
-export OS_TYPE=`uname`
 export PAGER='less'
 export TZ='America/New_York'
 export LANG='en_US.UTF-8'
@@ -79,7 +78,7 @@ alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
 # OS specific settings
-case $OS_TYPE in
+case `uname` in
 	Linux)
 		export HOST_NAME=`uname -n`
 		alias ls='ls --color=auto'
@@ -87,6 +86,11 @@ case $OS_TYPE in
 	CYGWIN*)
 		export HOST_NAME=`uname -n`
 		alias ls='ls --color=auto'
+		;;
+	Darwin)
+		export HOST_NAME=`hostname -s`
+		alias ls='ls -G'
+		export CLICOLOR=1
 		;;
 	FreeBSD)
 		export HOST_NAME=`hostname -s`
