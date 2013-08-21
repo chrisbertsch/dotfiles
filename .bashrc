@@ -129,7 +129,7 @@ _prompt_builder()
 		PWDCOLOR="${C11}"
 	fi
 	# Show exit status if not zero
-	if [ "${EXITSTATUS}" -ne 0 ] ; then
+	if [ $EXITSTATUS -ne 0 ] ; then
 		EXITCODE="${C03}[${EXITSTATUS}]"
 	else
 		EXITCODE=""
