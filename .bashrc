@@ -38,6 +38,8 @@ shopt -s histappend
 # Enable bash completion
 if [ -f "/etc/bash_completion" ] ; then
 	source "/etc/bash_completion"
+elif [ -f "$HOME/bash_completion" ] ; then
+	source "$HOME/bash_completion" &> /dev/null
 fi
 
 # Mosh alias
