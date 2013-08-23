@@ -105,8 +105,12 @@ case `uname` in
 		;;
 esac
 
-# Dynamic prompt
-PROMPT_COMMAND='_prompt_builder;'
+# Dynamic prompt and auto reset of ssh agent if in tmux
+if [[ -n $TMUX ]] ; then
+	PROMPT_COMMAND='_prompt_builder; reset_ssh_agent;'
+else
+	PROMPT_COMMAND='_prompt_builder;'
+fi
 
 # Prompt builder
 _prompt_builder()
