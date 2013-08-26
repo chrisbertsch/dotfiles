@@ -116,11 +116,13 @@ fi
 _prompt_builder()
 {
 	EXITSTATUS=$?
-	# Change prompt if root
+	# Change prompt if root or sudoed
 	if [ $USER == "root" ] ; then
 		USERPROMPT="${C03}#"
-	else
+	elif [ -z $SUDO_USER ] ; then
 		USERPROMPT="${C09}>"
+	else
+		USERPROMPT="${C07}$"
 	fi
 	# Change title to include user if sudoed
 	if [ -z $SUDO_USER ] ; then
