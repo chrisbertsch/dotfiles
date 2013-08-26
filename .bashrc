@@ -119,10 +119,13 @@ _prompt_builder()
 	# Change prompt if root or sudoed
 	if [ $USER == "root" ] ; then
 		USERPROMPT="${C03}#"
+		CONTINUEPROMPT="${C03}>>"
 	elif [ -z $SUDO_USER ] ; then
 		USERPROMPT="${C09}>"
+		CONTINUEPROMPT="${C09}>>"
 	else
 		USERPROMPT="${C07}$"
+		CONTINUEPROMPT="${C07}>>"
 	fi
 	# Change title to include user if sudoed
 	if [ -z $SUDO_USER ] ; then
@@ -144,7 +147,7 @@ _prompt_builder()
 	fi
 
 	PS1="${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
-	PS2="${C06}>${C00} "
+	PS2="${CONTINUEPROMPT}${C00} "
 
 	# Change screen/tmux window and xterm title names
 	case $TERM in
