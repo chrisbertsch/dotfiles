@@ -165,6 +165,11 @@ if [ -d "$HOME/bin" ] ; then
 	PATH=$HOME/bin:$PATH
 fi
 
+# MySQL prompt
+if [ -e "/usr/bin/mysql" ] ; then
+        export MYSQL_PS1='[\u@\h:\p \d]> '
+fi
+
 # SSH tab complete function
 _ssh_hosts()
 {
