@@ -8,15 +8,29 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+## if running bash start zsh
+#if [ -n "$BASH_VERSION" ] && tty --silent ; then
+#    # if zsh is installed
+#    if [ -x "/usr/bin/zsh" ] ; then
+#	exec /usr/bin/zsh --login
+#    # if zsh is in $HOME/bin
+#    elif [ -x "$HOME/bin/zsh" ] ; then
+#	exec $HOME/bin/zsh --login
+#    fi
+#fi
+
 # if running bash
-if [ -n "$BASH_VERSION" ]; then
+if [ -n "$BASH_VERSION" ] ; then
     # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
+    if [ -f "$HOME/.bashrc" ] ; then
+	source "$HOME/.bashrc"
     fi
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
+# if running zsh
+if [ -n "$ZSH_VERSION" ] ; then
+    # include .zshrc if it exists
+    if [ -f "$HOME/.zshrc" ] ; then
+        source "$HOME/.zshrc"
+    fi
 fi
