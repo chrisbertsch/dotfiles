@@ -55,7 +55,9 @@ alias zssh='ssh -C'
 alias xzssh='ssh -X -C'
 
 # Set LS_COLORS
-if [ -e "/usr/bin/dircolors" ] ; then
+if [ -e "/usr/bin/dircolors" ] && [ -f "$HOME/.dir_colors" ] ; then
+	eval `dircolors -b $HOME/.dir_colors`
+elif [ -e "/usr/bin/dircolors" ] ; then
 	eval `dircolors -b`
 fi
 
@@ -97,6 +99,7 @@ case `uname` in
 	FreeBSD)
 		export HOST_NAME=`hostname -s`
 		alias ls='ls -G'
+		export CLICOLOR=1
 		;;
 	SunOS)
 		export HOST_NAME=`uname -n`
