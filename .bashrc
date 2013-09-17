@@ -119,7 +119,8 @@ fi
 _prompt_builder()
 {
 	EXITSTATUS=$?
-	DATE_TIME=$(date --iso-8601='seconds')
+	# Date Time in ISO-8601 format
+	DATE_TIME=$(date +'%Y-%m-%dT%H:%M:%S%z')
 	# Change prompt if root or sudoed
 	if [ $USER == "root" ] ; then
 		USERPROMPT="${C03}#"
@@ -155,7 +156,7 @@ _prompt_builder()
 
 	# Change screen/tmux window and xterm title names
 	case $TERM in
-        	screen*)
+		screen*)
 			echo -ne "\033k$TITLE\033\\"
 			;;
 		xterm*)
