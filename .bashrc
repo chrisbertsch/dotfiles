@@ -119,6 +119,7 @@ fi
 _prompt_builder()
 {
 	EXITSTATUS=$?
+	DATE_TIME=$(date --iso-8601='seconds')
 	# Change prompt if root or sudoed
 	if [ $USER == "root" ] ; then
 		USERPROMPT="${C03}#"
@@ -149,7 +150,7 @@ _prompt_builder()
 		EXITCODE=""
 	fi
 
-	PS1="${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
+	PS1="${C10}${DATE_TIME}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
 	PS2="${CONTINUEPROMPT}${C00} "
 
 	# Change screen/tmux window and xterm title names
