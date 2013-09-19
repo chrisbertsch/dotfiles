@@ -151,7 +151,7 @@ _prompt_builder()
 		EXITCODE=""
 	fi
 
-	PS1="${C10}${DATE_TIME}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
+	PS1="${C08}${DATE_TIME}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
 	PS2="${CONTINUEPROMPT}${C00} "
 
 	# Change screen/tmux window and xterm title names
