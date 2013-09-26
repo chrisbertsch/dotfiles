@@ -1,1 +1,11 @@
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+
+# AWS CLI tab complete function
+if [ -e "/usr/local/bin/aws" ] ; then
+	complete -C aws_completer aws
+fi
+
+# Set PATH so it includes pebble dev bin if it exists
+if [[ $HOST_NAME == "iceman" ]] && [[ -d "$HOME/dev/pebble-dev/arm-cs-tools/bin" ]] ; then
+	export PATH=$HOME/dev/pebble-dev/arm-cs-tools/bin:$PATH
+fi
