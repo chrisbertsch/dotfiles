@@ -19,9 +19,16 @@ C16="\[\033[1;37m\]"	# white (bold)
 
 ################################################
 
+# Set PATH so it includes user's private bin if it exists
+if [ -d $HOME/bin ] ; then
+	PATH=$HOME/bin:$PATH
+fi
+
+# Miscellaneous
 export PAGER='less'
 export TZ='America/New_York'
 export LANG='en_US.UTF-8'
+export OS_TYPE=`uname`
 
 # When changing directory small typos can be ignored by bash
 # for example, cd /vr/lgo/apaache would find /var/log/apache
@@ -36,14 +43,14 @@ shopt -s cmdhist
 shopt -s histappend
 
 # Enable bash completion
-if [ -f "/etc/bash_completion" ] ; then
-	source "/etc/bash_completion"
-elif [ -f "$HOME/bash_completion" ] ; then
-	source "$HOME/bash_completion" &> /dev/null
+if [ -f /etc/bash_completion ] ; then
+	source /etc/bash_completion
+elif [ -f $HOME/bash_completion ] ; then
+	source $HOME/bash_completion &> /dev/null
 fi
 
 # Mosh alias
-if [ -e "/usr/bin/mosh" ] ; then
+if [ -e /usr/bin/mosh ] ; then
 	alias mssh='mosh'
 	complete -F _ssh_hosts mssh
 fi
@@ -55,14 +62,16 @@ alias zssh='ssh -C'
 alias xzssh='ssh -X -C'
 
 # Set LS_COLORS
-if [ -e "/usr/bin/dircolors" ] && [ -f "$HOME/.dir_colors" ] ; then
-	eval `dircolors -b $HOME/.dir_colors`
-elif [ -e "/usr/bin/dircolors" ] ; then
-	eval `dircolors -b`
+if [ -e /usr/bin/dircolors ] ; then
+	if [ -f $HOME/.dir_colors ] ; then
+		eval `dircolors -b $HOME/.dir_colors`
+	else
+		eval `dircolors -b`
+	fi
 fi
 
 # Default to vim if vim exists
-if [ -e "/usr/bin/vim" ] ; then
+if [ -e /usr/bin/vim ] ; then
 	alias vi='vim'
 	export EDITOR='vim'
 	export VISUAL='vim'
@@ -71,18 +80,16 @@ else
 	export VISUAL='vi'
 fi
 
-# If 256 colors
-if [[ $TERM =~ '256color' ]] ; then
-	echo -e "\e[38;05;1m2\e[38;05;2m5\e[38;05;3m6 \e[38;05;4mC\e[38;05;5mO\e[38;05;6mL\e[38;05;7mO\e[38;05;8mR\e[38;05;9mS\e[0m"
+# MySQL prompt
+if [ -e /usr/bin/mysql ] ; then
+        export MYSQL_PS1='[\u@\h:\p \d]> '
 fi
 
 # Show grep in color
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
+export GREP_OPTIONS='--color=auto'
 
 # OS specific settings
-case `uname` in
+case $OS_TYPE in
 	Linux)
 		export HOST_NAME=`uname -n`
 		alias ls='ls --color=auto'
@@ -103,8 +110,6 @@ case `uname` in
 		;;
 	SunOS)
 		export HOST_NAME=`uname -n`
-		alias ls='gls --color=auto'
-		alias grep='ggrep --color=auto'
 		;;
 esac
 
@@ -118,62 +123,50 @@ fi
 # Prompt builder
 _prompt_builder()
 {
-	EXITSTATUS=$?
+	exitstatus=$?
 	# Date Time in ISO-8601 format
-	DATE_TIME=$(date +'%Y-%m-%dT%H:%M:%S%z')
+	date_time=$(date +'%Y-%m-%dT%H:%M:%S%z')
 	# Change prompt if root or sudoed
-	if [ $USER == "root" ] ; then
-		USERPROMPT="${C03}#"
-		CONTINUEPROMPT="${C03}>>"
+	if [ $USER == 'root' ] ; then
+		userprompt="${C03}#"
+		continueprompt="${C03}>>"
 	elif [ -z $SUDO_USER ] ; then
-		USERPROMPT="${C09}>"
-		CONTINUEPROMPT="${C09}>>"
+		userprompt="${C09}>"
+		continueprompt="${C09}>>"
 	else
-		USERPROMPT="${C07}$"
-		CONTINUEPROMPT="${C07}>>"
+		userprompt="${C07}$"
+		continueprompt="${C07}>>"
 	fi
 	# Change title to include user if sudoed
 	if [ -z $SUDO_USER ] ; then
-		TITLE=$HOST_NAME
+		title="$HOST_NAME"
 	else
-		TITLE="$USER@$HOST_NAME"
+		title="$USER@$HOST_NAME"
 	fi
 	# Change working directory color if writable
 	if [ -w $PWD ] ; then
-		PWDCOLOR="${C08}"
+		pwdcolor="${C08}"
 	else
-		PWDCOLOR="${C11}"
+		pwdcolor="${C11}"
 	fi
 	# Show exit status if not zero
-	if [ $EXITSTATUS -ne 0 ] ; then
-		EXITCODE="${C03}[${EXITSTATUS}]"
+	if [ $exitstatus -ne 0 ] ; then
+		exitcode="${C03}[${exitstatus}]"
 	else
-		EXITCODE=""
+		exitcode=""
 	fi
-
-	PS1="${C08}${DATE_TIME}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${PWDCOLOR}\w${C15}]${EXITCODE}${USERPROMPT}${C00} "
-	PS2="${CONTINUEPROMPT}${C00} "
-
+	PS1="${C08}${date_time}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${pwdcolor}\w${C15}]${exitcode}${userprompt}${C00} "
+	PS2="${continueprompt}${C00} "
 	# Change screen/tmux window and xterm title names
 	case $TERM in
 		screen*)
-			echo -ne "\033k$TITLE\033\\"
+			echo -ne "\033k$title\033\\"
 			;;
 		xterm*)
-			echo -ne "\033]0;$TITLE\007"
+			echo -ne "\033]0;$title\007"
 			;;
 	esac
 }
-
-# Set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-	PATH=$HOME/bin:$PATH
-fi
-
-# MySQL prompt
-if [ -e "/usr/bin/mysql" ] ; then
-        export MYSQL_PS1='[\u@\h:\p \d]> '
-fi
 
 # SSH tab complete function
 _ssh_hosts()
@@ -182,25 +175,24 @@ _ssh_hosts()
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	known_hosts="/dev/null"
-	if [ -f "/etc/ssh/ssh_known_hosts" ] ; then
-		known_hosts="/etc/ssh/ssh_known_hosts $known_hosts"
+	if [ -f /etc/ssh/ssh_known_hosts ] ; then
+		known_hosts="/etc/ssh/ssh_known_hosts ${known_hosts} "
 	fi
-	if [ -f "$HOME/.ssh/known_hosts" ] ; then
-		known_hosts="$HOME/.ssh/known_hosts $known_hosts"
+	if [ -f $HOME/.ssh/known_hosts ] ; then
+		known_hosts="$HOME/.ssh/known_hosts ${known_hosts} "
 	fi
-	opts=$(cat $known_hosts | awk -F "," '{print $1}' | awk '{print $1}' | uniq)
+	opts=$(cat ${known_hosts} | awk -F "," '{print $1}' | awk '{print $1}' | uniq)
 	COMPREPLY=($(compgen -W "${opts}" ${cur}))
 }
-
 complete -F _ssh_hosts ssh xssh zssh xzssh
 
 # Start SSH agent
 start_ssh_agent()
 {
-	SSHAGENT=/usr/bin/ssh-agent
-	SSHAGENTARGS="-s"
-	if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ] ; then
-		eval `$SSHAGENT $SSHAGENTARGS`
+	sshagent=/usr/bin/ssh-agent
+	sshagentargs='-s'
+	if [[ -z $SSH_AUTH_SOCK ]] && [[ -x $sshagent ]] ; then
+		eval `$sshagent $sshagentargs`
 		trap "kill $SSH_AGENT_PID" 0
 		ssh-add
 	fi
@@ -210,9 +202,9 @@ start_ssh_agent()
 reset_ssh_agent()
 {
 	if [[ -n $TMUX ]] ; then
-		NEW_SSH_AUTH_SOCK=`tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2`
-		if [[ -n $NEW_SSH_AUTH_SOCK ]] && [[ -S $NEW_SSH_AUTH_SOCK ]] ; then
-			SSH_AUTH_SOCK=$NEW_SSH_AUTH_SOCK
+		new_ssh_auth_sock=`tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2`
+		if [[ -n $new_ssh_auth_sock ]] && [[ -S $new_ssh_auth_sock ]] ; then
+			SSH_AUTH_SOCK=$new_ssh_auth_sock
 		fi
 	fi
 }
@@ -238,46 +230,39 @@ extract() {
 		echo "'$1' is not a valid archive type"
 	fi
 }
-
 complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 
 # Shim for sudo to change TITLE and TERM
 _sudo()
 {
-        local PARAMS=$@
-        local SUSER=$(echo $PARAMS | grep -Eo "\-u\s\w+" | awk '{print $2}')
-        local OLDTERM=$TERM
-
+        params=$@
+        suser=$(echo $params | grep -Eo '\-u\s\w+' | awk '{print $2}')
+        oldterm=$TERM
         # Change title to include user if sudoed
-        if [ -z $SUSER ] ; then
-                TITLE="root@$HOST_NAME"
+        if [ -z $suser ] ; then
+                title="root@$HOST_NAME"
         else
-                TITLE="$SUSER@$HOST_NAME"
+                title="$suser@$HOST_NAME"
         fi
-
         # Change screen/tmux window and xterm title names
         case $TERM in
                 screen*)
-                        echo -ne "\033k$TITLE\033\\"
+                        echo -ne "\033k$title\033\\"
                         ;;
                 xterm*)
-                        echo -ne "\033]0;$TITLE\007"
+                        echo -ne "\033]0;$title\007"
                         ;;
         esac
-
         # Set TERM to xterm-256color
-        export TERM="xterm-256color"
-
+        TERM='xterm-256color'
         # Execute sudo
-        /usr/bin/sudo $PARAMS
-
+        /usr/bin/sudo $params
         # Reset TERM to old TERM
-        export TERM=$OLDTERM
+        TERM=$oldterm
 }
-
 alias sudo='_sudo'
 
 # Include .bashrc-env if it exists for environment specific settings
-if [ -f "$HOME/.bashrc-env" ] ; then
-	source "$HOME/.bashrc-env"
+if [ -f $HOME/.bashrc-env ] ; then
+	source $HOME/.bashrc-env
 fi
