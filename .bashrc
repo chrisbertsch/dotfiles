@@ -236,7 +236,7 @@ complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 _sudo()
 {
         params=$@
-        suser=$(echo $params | grep -Eo '\-u\s\w+' | awk '{print $2}')
+        suser=$(echo $params | grep -Eo '\-u \w+' | awk '{print $2}')
         oldterm=$TERM
         # Change title to include user if sudoed
         if [ -z $suser ] ; then
