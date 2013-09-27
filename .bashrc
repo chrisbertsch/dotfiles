@@ -241,6 +241,42 @@ extract() {
 
 complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 
+# Shim for sudo to change TITLE and TERM
+_sudo()
+{
+        local PARAMS=$@
+        local SUSER=$(echo $PARAMS | grep -Eo "\-u\s\w+" | awk '{print $2}')
+        local OLDTERM=$TERM
+
+        # Change title to include user if sudoed
+        if [ -z $SUSER ] ; then
+                TITLE="root@$HOST_NAME"
+        else
+                TITLE="$SUSER@$HOST_NAME"
+        fi
+
+        # Change screen/tmux window and xterm title names
+        case $TERM in
+                screen*)
+                        echo -ne "\033k$TITLE\033\\"
+                        ;;
+                xterm*)
+                        echo -ne "\033]0;$TITLE\007"
+                        ;;
+        esac
+
+        # Set TERM to xterm-256color
+        export TERM="xterm-256color"
+
+        # Execute sudo
+        /usr/bin/sudo $PARAMS
+
+        # Reset TERM to old TERM
+        export TERM=$OLDTERM
+}
+
+alias sudo='_sudo'
+
 # Include .bashrc-env if it exists for environment specific settings
 if [ -f "$HOME/.bashrc-env" ] ; then
 	source "$HOME/.bashrc-env"
