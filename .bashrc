@@ -28,7 +28,7 @@ fi
 export PAGER='less'
 export TZ='America/New_York'
 export LANG='en_US.UTF-8'
-export OS_TYPE=`uname`
+export OS_TYPE=$(uname)
 
 # When changing directory small typos can be ignored by bash
 # for example, cd /vr/lgo/apaache would find /var/log/apache
@@ -82,7 +82,7 @@ fi
 
 # MySQL prompt
 if [ -e /usr/bin/mysql ] ; then
-        export MYSQL_PS1='[\u@\h:\p \d]> '
+	export MYSQL_PS1='[\u@\h:\p \d]> '
 fi
 
 # Show grep in color
@@ -91,25 +91,25 @@ export GREP_OPTIONS='--color=auto'
 # OS specific settings
 case $OS_TYPE in
 	Linux)
-		export HOST_NAME=`uname -n`
+		export HOST_NAME=$(uname -n)
 		alias ls='ls --color=auto'
 		;;
 	CYGWIN*)
-		export HOST_NAME=`uname -n`
+		export HOST_NAME=$(uname -n)
 		alias ls='ls --color=auto'
 		;;
 	Darwin)
-		export HOST_NAME=`hostname -s`
+		export HOST_NAME=$(hostname -s)
 		alias ls='ls -G'
 		export CLICOLOR=1
 		;;
 	FreeBSD)
-		export HOST_NAME=`hostname -s`
+		export HOST_NAME=$(hostname -s)
 		alias ls='ls -G'
 		export CLICOLOR=1
 		;;
 	SunOS)
-		export HOST_NAME=`uname -n`
+		export HOST_NAME=$(uname -n)
 		;;
 esac
 
@@ -189,10 +189,10 @@ complete -F _ssh_hosts ssh xssh zssh xzssh
 # Start SSH agent
 start_ssh_agent()
 {
-	sshagent=/usr/bin/ssh-agent
+	sshagentpath=/usr/bin/ssh-agent
 	sshagentargs='-s'
 	if [[ -z $SSH_AUTH_SOCK ]] && [[ -x $sshagent ]] ; then
-		eval `$sshagent $sshagentargs`
+		eval `$sshagentpath $sshagentargs`
 		trap "kill $SSH_AGENT_PID" 0
 		ssh-add
 	fi
@@ -202,7 +202,7 @@ start_ssh_agent()
 reset_ssh_agent()
 {
 	if [[ -n $TMUX ]] ; then
-		new_ssh_auth_sock=`tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2`
+		new_ssh_auth_sock=$(tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2)
 		if [[ -n $new_ssh_auth_sock ]] && [[ -S $new_ssh_auth_sock ]] ; then
 			SSH_AUTH_SOCK=$new_ssh_auth_sock
 		fi
@@ -235,30 +235,31 @@ complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 # Shim for sudo to change TITLE and TERM
 _sudo()
 {
-        params=$@
-        suser=$(echo $params | grep -Eo '\-u \w+' | awk '{print $2}')
-        oldterm=$TERM
-        # Change title to include user if sudoed
-        if [ -z $suser ] ; then
-                title="root@$HOST_NAME"
-        else
-                title="$suser@$HOST_NAME"
-        fi
-        # Change screen/tmux window and xterm title names
-        case $TERM in
-                screen*)
-                        echo -ne "\033k$title\033\\"
-                        ;;
-                xterm*)
-                        echo -ne "\033]0;$title\007"
-                        ;;
-        esac
-        # Set TERM to xterm-256color
-        TERM='xterm-256color'
-        # Execute sudo
-        /usr/bin/sudo $params
-        # Reset TERM to old TERM
-        TERM=$oldterm
+	sudopath=/usr/bin/sudo
+	params=$@
+	suser=$(echo $params | grep -Eo '\-u \w+' | awk '{print $2}')
+	oldterm=$TERM
+	# Change title to include user if sudoed
+	if [ -z $suser ] ; then
+		title="root@$HOST_NAME"
+	else
+		title="$suser@$HOST_NAME"
+	fi
+	# Change screen/tmux window and xterm title names
+	case $TERM in
+		screen*)
+			echo -ne "\033k$title\033\\"
+			;;
+		xterm*)
+			echo -ne "\033]0;$title\007"
+			;;
+	esac
+	# Set TERM to xterm-256color
+	TERM='xterm-256color'
+	# Execute sudo
+	$sudopath $params
+	# Reset TERM to old TERM
+	TERM=$oldterm
 }
 alias sudo='_sudo'
 
