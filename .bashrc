@@ -182,7 +182,7 @@ _ssh_hosts()
 		known_hosts="$HOME/.ssh/known_hosts ${known_hosts} "
 	fi
 	opts=$(cat ${known_hosts} | awk -F "," '{print $1}' | awk '{print $1}' | uniq)
-	COMPREPLY=($(compgen -W "${opts}" ${cur}))
+	COMPREPLY=($(compgen -W "${opts}" "${cur}"))
 }
 complete -F _ssh_hosts ssh xssh zssh xzssh
 
