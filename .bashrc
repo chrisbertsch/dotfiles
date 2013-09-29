@@ -191,7 +191,7 @@ start_ssh_agent()
 {
 	sshagentpath=/usr/bin/ssh-agent
 	sshagentargs='-s'
-	if [[ -z $SSH_AUTH_SOCK ]] && [[ -x $sshagent ]] ; then
+	if [[ -z $SSH_AUTH_SOCK ]] && [[ -x $sshagentpath ]] ; then
 		eval `$sshagentpath $sshagentargs`
 		trap "kill $SSH_AGENT_PID" 0
 		ssh-add
