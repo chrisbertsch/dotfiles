@@ -8,6 +8,9 @@ have()
 		have="yes"
 }
 
+# AWS CLI completion
+have aws && complete -C aws_completer aws
+
 # Console completion
 have console && {
 _console_hosts()

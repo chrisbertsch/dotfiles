@@ -64,7 +64,7 @@ alias xzssh='ssh -X -C'
 
 # Set LS_COLORS
 if [ -x /usr/bin/dircolors ] ; then
-	if [ -f $HOME/.dir_colors ] ; then
+	if [ -r $HOME/.dir_colors ] ; then
 		eval `dircolors -b $HOME/.dir_colors`
 	else
 		eval `dircolors -b`
@@ -124,8 +124,8 @@ fi
 # Prompt builder
 _prompt_builder()
 {
-	local exitstatus userprompt continueprompt title pwdcolor exitcode
-	exitstatus=$?
+	local exitstatus=$?
+	local userprompt continueprompt title pwdcolor exitcode
 	# Change prompt if root or sudoed
 	if [ $USER == 'root' ] ; then
 		userprompt="${C03}#"
@@ -168,7 +168,7 @@ _prompt_builder()
 	esac
 }
 
-# SSH tab complete function
+# SSH completion
 _ssh_hosts()
 {
 	local prev cur opts known_hosts
