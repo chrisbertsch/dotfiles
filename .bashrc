@@ -20,15 +20,16 @@ C16="\[\033[1;37m\]"	# white (bold)
 ################################################
 
 # Set PATH so it includes user's private bin if it exists
-if [ -d $HOME/bin ] ; then
-	PATH=$HOME/bin:$PATH
-fi
+[ -d $HOME/bin ] && PATH=$PATH:$HOME/bin
 
 # Miscellaneous
 export PAGER='less'
 export TZ='America/New_York'
 export LANG='en_US.UTF-8'
 export OS_TYPE=$(uname)
+
+# Paths
+[ -z $SUDO_PATH ] && readonly SUDO_PATH=$(which sudo)
 
 # When changing directory small typos can be ignored by bash
 # for example, cd /vr/lgo/apaache would find /var/log/apache
@@ -43,14 +44,14 @@ shopt -s cmdhist
 shopt -s histappend
 
 # Enable bash completion
-if [ -f /etc/bash_completion ] ; then
+if [ -r /etc/bash_completion ] ; then
 	source /etc/bash_completion
-elif [ -f $HOME/bash_completion ] ; then
-	source $HOME/bash_completion &> /dev/null
+elif [ -r $HOME/bash_completion ] ; then
+	source $HOME/bash_completion
 fi
 
 # Mosh alias
-if [ -e /usr/bin/mosh ] ; then
+if [ -x /usr/bin/mosh ] ; then
 	alias mssh='mosh'
 	complete -F _ssh_hosts mssh
 fi
@@ -62,7 +63,7 @@ alias zssh='ssh -C'
 alias xzssh='ssh -X -C'
 
 # Set LS_COLORS
-if [ -e /usr/bin/dircolors ] ; then
+if [ -x /usr/bin/dircolors ] ; then
 	if [ -f $HOME/.dir_colors ] ; then
 		eval `dircolors -b $HOME/.dir_colors`
 	else
@@ -71,7 +72,7 @@ if [ -e /usr/bin/dircolors ] ; then
 fi
 
 # Default to vim if vim exists
-if [ -e /usr/bin/vim ] ; then
+if [ -x /usr/bin/vim ] ; then
 	alias vi='vim'
 	export EDITOR='vim'
 	export VISUAL='vim'
@@ -81,7 +82,7 @@ else
 fi
 
 # MySQL prompt
-if [ -e /usr/bin/mysql ] ; then
+if [ -x /usr/bin/mysql ] ; then
 	export MYSQL_PS1='[\u@\h:\p \d]> '
 fi
 
@@ -123,9 +124,8 @@ fi
 # Prompt builder
 _prompt_builder()
 {
+	local exitstatus userprompt continueprompt title pwdcolor exitcode
 	exitstatus=$?
-	# Date Time in ISO-8601 format
-	date_time=$(date +'%Y-%m-%dT%H:%M:%S%z')
 	# Change prompt if root or sudoed
 	if [ $USER == 'root' ] ; then
 		userprompt="${C03}#"
@@ -155,7 +155,7 @@ _prompt_builder()
 	else
 		exitcode=""
 	fi
-	PS1="${C08}${date_time}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${pwdcolor}\w${C15}]${exitcode}${userprompt}${C00} "
+	PS1="${C08}\D{%Y-%m-%dT%H:%M:%S%z}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${pwdcolor}\w${C15}]${exitcode}${userprompt}${C00} "
 	PS2="${continueprompt}${C00} "
 	# Change screen/tmux window and xterm title names
 	case $TERM in
@@ -175,10 +175,10 @@ _ssh_hosts()
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	known_hosts="/dev/null"
-	if [ -f /etc/ssh/ssh_known_hosts ] ; then
+	if [ -r /etc/ssh/ssh_known_hosts ] ; then
 		known_hosts="/etc/ssh/ssh_known_hosts ${known_hosts} "
 	fi
-	if [ -f $HOME/.ssh/known_hosts ] ; then
+	if [ -r $HOME/.ssh/known_hosts ] ; then
 		known_hosts="$HOME/.ssh/known_hosts ${known_hosts} "
 	fi
 	opts=$(cat ${known_hosts} | awk -F "," '{print $1}' | awk '{print $1}' | uniq)
@@ -189,10 +189,8 @@ complete -F _ssh_hosts ssh xssh zssh xzssh
 # Start SSH agent
 start_ssh_agent()
 {
-	sshagentpath=/usr/bin/ssh-agent
-	sshagentargs='-s'
-	if [[ -z $SSH_AUTH_SOCK ]] && [[ -x $sshagentpath ]] ; then
-		eval `$sshagentpath $sshagentargs`
+	if [ -z $SSH_AUTH_SOCK ] ; then
+		eval `ssh-agent -s`
 		trap "kill $SSH_AGENT_PID" 0
 		ssh-add
 	fi
@@ -202,7 +200,7 @@ start_ssh_agent()
 reset_ssh_agent()
 {
 	if [[ -n $TMUX ]] ; then
-		new_ssh_auth_sock=$(tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2)
+		local new_ssh_auth_sock=$(tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2)
 		if [[ -n $new_ssh_auth_sock ]] && [[ -S $new_ssh_auth_sock ]] ; then
 			SSH_AUTH_SOCK=$new_ssh_auth_sock
 		fi
@@ -235,7 +233,7 @@ complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 # Shim for sudo to change TITLE and TERM
 _sudo()
 {
-	sudopath=/usr/bin/sudo
+	local params suser oldterm title
 	params=$@
 	suser=$(echo $params | grep -Eo '\-u \w+' | awk '{print $2}')
 	oldterm=$TERM
@@ -254,16 +252,16 @@ _sudo()
 			echo -ne "\033]0;$title\007"
 			;;
 	esac
-	# Set TERM to xterm-256color
-	TERM='xterm-256color'
+	# Set TERM to xterm
+	TERM='xterm'
 	# Execute sudo
-	$sudopath $params
+	if [ -x $SUDO_PATH ] ; then
+		$SUDO_PATH $params
+	fi
 	# Reset TERM to old TERM
 	TERM=$oldterm
 }
 alias sudo='_sudo'
 
 # Include .bashrc-env if it exists for environment specific settings
-if [ -f $HOME/.bashrc-env ] ; then
-	source $HOME/.bashrc-env
-fi
+[ -r $HOME/.bashrc-env ] && source $HOME/.bashrc-env
