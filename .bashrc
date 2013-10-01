@@ -231,9 +231,9 @@ extract() {
 complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 
 # Shim for sudo to change TITLE and TERM
-_sudo()
+sudo_shim()
 {
-	local params suser oldterm title
+	local params suser oldterm title exitstatus
 	params=$@
 	suser=$(echo $params | grep -Eo '\-u \w+' | awk '{print $2}')
 	oldterm=$TERM
@@ -255,13 +255,15 @@ _sudo()
 	# Set TERM to xterm
 	TERM='xterm'
 	# Execute sudo
-	if [ -x $SUDO_PATH ] ; then
+	if [[ -n $SUDO_PATH ]] && [[ -x $SUDO_PATH ]] ; then
 		$SUDO_PATH $params
+		exitstatus=$?
 	fi
 	# Reset TERM to old TERM
 	TERM=$oldterm
+	return $exitstatus
 }
-alias sudo='_sudo'
+alias sudo='sudo_shim'
 
 # Include .bashrc-env if it exists for environment specific settings
 [ -r $HOME/.bashrc-env ] && source $HOME/.bashrc-env
