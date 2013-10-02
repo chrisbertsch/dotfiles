@@ -26,9 +26,9 @@ stock()
 		rm $tmp_file
 	fi
 	if [[ $cp =~ '-' ]] ; then
-		color="\e[38;05;1m"
+		color="\e[1;31m"
 	else
-		color="\e[38;05;2m"
+		color="\e[1;32m"
 	fi
 	if [[ -n $price ]] ; then
 		echo -e "${1^^}: \$$price $color$c $cp\\e[0m"
