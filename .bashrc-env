@@ -4,3 +4,38 @@ export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 if [[ $HOST_NAME == 'iceman' ]] && [[ -d $HOME/dev/pebble-dev/arm-cs-tools/bin ]] ; then
 	export PATH=$HOME/dev/pebble-dev/arm-cs-tools/bin:$PATH
 fi
+
+# Get stock quote
+stock()
+{
+	local datetime tmp_file price c cp color
+	datetime=$(date +'%s')
+	tmp_file=/tmp/stock_${1^^}_$datetime.tmp
+	if [[ -n `which curl` ]] ; then
+		curl -s "http://www.google.com/finance?q=${1^^}" > $tmp_file
+	elif [[ -n `which wget` ]] ; then
+		wget -q -O "$tmp_file" "http://www.google.com/finance?q=${1^^}"
+	else
+		echo "curl and wget Not Found"
+		return 2
+	fi
+	if [ -r $tmp_file ] ; then
+		price=$(cat $tmp_file | grep -m1 -E 'span id="ref_' | awk -F ">" '{print $2}' | awk -F "<" '{print $1}')
+		c=$(cat $tmp_file | grep -m1 -E 'ref_.*_c' | awk -F "c\">" '{print $2}' | awk -F "</" '{print $1}')
+		cp=$(cat $tmp_file | grep -m1 -E 'ref_.*_cp' | awk -F "(" '{print $2}' | awk -F ")" '{print $1}')
+		rm $tmp_file
+	fi
+	if [[ $cp =~ '-' ]] ; then
+		color="\e[38;05;1m"
+	else
+		color="\e[38;05;2m"
+	fi
+	if [[ -n $price ]] ; then
+		echo -e "${1^^}: \$$price $color$c $cp\\e[0m"
+		return 0
+	else
+		echo "${1^^} Not Found"
+		return 1
+	fi
+	
+}
