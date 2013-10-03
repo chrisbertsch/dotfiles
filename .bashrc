@@ -92,9 +92,6 @@ fi
 # Show grep in color
 export GREP_OPTIONS='--color=auto'
 
-# Show less in color
-export LESS='-R'
-
 # OS specific settings
 case $OS_TYPE in
 	Linux)
