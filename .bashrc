@@ -25,7 +25,7 @@ C16="\[\033[1;37m\]"	# white (bold)
 # This function checks whether we have a given program on the system.
 _have()
 {
-	PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin type $1 &>/dev/null
+	command -v $1 &>/dev/null
 }
 
 # Miscellaneous
@@ -239,7 +239,7 @@ complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 # Shim for sudo to change TITLE and TERM
 _have sudo && {
 # Set sudo path env variable
-[ -z $SUDO_PATH ] && readonly SUDO_PATH=$(which sudo)
+[ -z $SUDO_PATH ] && readonly SUDO_PATH=$(command -v sudo)
 sudo_shim()
 {
 	local params suser oldterm title exitstatus
