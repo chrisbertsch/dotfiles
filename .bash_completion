@@ -12,7 +12,7 @@ have()
 have aws && complete -C aws_completer aws
 
 # Sudo completion for -u flag for users
-have sudo && {
+have sudo && have _root_command && {
 _sudo()
 {
 	local prev cur opts
@@ -33,7 +33,6 @@ _sudo()
 }
 complete -F _sudo $filenames sudo
 }
-
 
 # Console completion
 have console && {
