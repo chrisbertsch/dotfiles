@@ -277,3 +277,5 @@ alias sudo='sudo_shim'
 
 # Include .bashrc-env if it exists for environment specific settings
 [ -r $HOME/.bashrc-env ] && source $HOME/.bashrc-env
+
+unset -f _have
