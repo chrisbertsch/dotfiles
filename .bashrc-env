@@ -2,39 +2,47 @@ export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Set PATH so it includes pebble dev bin if it exists
 if [[ $HOST_NAME == 'iceman' ]] && [[ -d $HOME/dev/pebble-dev/arm-cs-tools/bin ]] ; then
-	export PATH=$HOME/dev/pebble-dev/arm-cs-tools/bin:$PATH
+	export PATH=$PATH:$HOME/dev/pebble-dev/arm-cs-tools/bin
 fi
 
 # Get stock quote
 stock()
 {
-	local datetime tmp_file price c cp color
+	local ticker datetime tmp_file url price c cp color
+	ticker=$(echo $@ | sed 's/ /+/g')
 	datetime=$(date +'%s')
-	tmp_file=/tmp/stock_${1^^}_$datetime.tmp
-	if [[ -n `which curl` ]] ; then
-		curl -s "http://www.google.com/finance?q=${1^^}" > $tmp_file
-	elif [[ -n `which wget` ]] ; then
-		wget -q -O "$tmp_file" "http://www.google.com/finance?q=${1^^}"
+	tmp_file="/tmp/stock_$1_$datetime.tmp"
+	url="http://www.google.com/finance?q=$ticker"
+	# Attempt to use curl
+	if _have curl ; then
+		curl -s "$url" > $tmp_file
+		[ $? -ne 0 ] && return 4
+	# Attempt to use wget
+	elif _have wget ; then
+		wget -q -O "$tmp_file" "$url"
+		[ $? -ne 0 ] && return 3
 	else
 		echo "curl and wget Not Found"
 		return 2
 	fi
+	# Scrape page
 	if [ -r $tmp_file ] ; then
 		price=$(cat $tmp_file | grep -m1 -E 'span id="ref_' | awk -F ">" '{print $2}' | awk -F "<" '{print $1}')
 		c=$(cat $tmp_file | grep -m1 -E 'ref_.*_c' | awk -F "c\">" '{print $2}' | awk -F "</" '{print $1}')
 		cp=$(cat $tmp_file | grep -m1 -E 'ref_.*_cp' | awk -F "(" '{print $2}' | awk -F ")" '{print $1}')
 		rm $tmp_file
 	fi
+	# Set color based on +/- chnage
 	if [[ $cp =~ '-' ]] ; then
 		color="\e[1;31m"
 	else
 		color="\e[1;32m"
 	fi
 	if [[ -n $price ]] ; then
-		echo -e "${1^^}: \$$price $color$c $cp\\e[0m"
+		echo -e "\$$price $color$c $cp\\e[0m"
 		return 0
 	else
-		echo "${1^^} Not Found"
+		echo "$@ Not Found"
 		return 1
 	fi
 	
