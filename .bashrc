@@ -22,14 +22,17 @@ C16="\[\033[1;37m\]"	# white (bold)
 # Set PATH so it includes user's private bin if it exists
 [ -d $HOME/bin ] && PATH=$PATH:$HOME/bin
 
+# This function checks whether we have a given program on the system.
+_have()
+{
+	PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin type $1 &>/dev/null
+}
+
 # Miscellaneous
 export PAGER='less'
 export TZ='America/New_York'
 export LANG='en_US.UTF-8'
 export OS_TYPE=$(uname)
-
-# Paths
-[ -z $SUDO_PATH ] && readonly SUDO_PATH=$(which sudo)
 
 # When changing directory small typos can be ignored by bash
 # for example, cd /vr/lgo/apaache would find /var/log/apache
@@ -51,7 +54,7 @@ elif [ -r $HOME/bash_completion ] ; then
 fi
 
 # Mosh alias
-if [ -x /usr/bin/mosh ] ; then
+if _have mosh ; then
 	alias mssh='mosh'
 	complete -F _ssh_hosts mssh
 fi
@@ -63,7 +66,7 @@ alias zssh='ssh -C'
 alias xzssh='ssh -X -C'
 
 # Set LS_COLORS
-if [ -x /usr/bin/dircolors ] ; then
+if _have dircolors ; then
 	if [ -r $HOME/.dir_colors ] ; then
 		eval `dircolors -b $HOME/.dir_colors`
 	else
@@ -72,7 +75,7 @@ if [ -x /usr/bin/dircolors ] ; then
 fi
 
 # Default to vim if vim exists
-if [ -x /usr/bin/vim ] ; then
+if _have vim ; then
 	alias vi='vim'
 	export EDITOR='vim'
 	export VISUAL='vim'
@@ -82,7 +85,7 @@ else
 fi
 
 # MySQL prompt
-if [ -x /usr/bin/mysql ] ; then
+if _have mysql ; then
 	export MYSQL_PS1='[\u@\h:\p \d]> '
 fi
 
@@ -234,6 +237,9 @@ extract() {
 complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 
 # Shim for sudo to change TITLE and TERM
+_have sudo && {
+# Set sudo path env variable
+[ -z $SUDO_PATH ] && readonly SUDO_PATH=$(which sudo)
 sudo_shim()
 {
 	local params suser oldterm title exitstatus
@@ -267,6 +273,7 @@ sudo_shim()
 	return $exitstatus
 }
 alias sudo='sudo_shim'
+}
 
 # Include .bashrc-env if it exists for environment specific settings
 [ -r $HOME/.bashrc-env ] && source $HOME/.bashrc-env
