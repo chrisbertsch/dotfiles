@@ -11,6 +11,30 @@ have()
 # AWS CLI completion
 have aws && complete -C aws_completer aws
 
+# Sudo completion for -u flag for users
+have sudo && {
+_sudo()
+{
+	local prev cur opts
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	if [ $prev == "-u" ] ; then
+		opts=$(getent passwd | awk -F ':' '{print $1}')
+		COMPREPLY=($(compgen -W "${opts}" "${cur}"))
+	elif [ "${COMP_WORDS[1]}" == "-u" ] ; then
+		for (( i=1 ; i<=($COMP_CWORD-2) ; i++)) ; do
+			COMP_WORDS[i]=${COMP_WORDS[i+2]}
+		done
+		COMP_CWORD=$(($COMP_CWORD-2))
+		_root_command $1 $2 $3
+	else
+		_root_command $1 $2 $3
+	fi
+}
+complete -F _sudo $filenames sudo
+}
+
+
 # Console completion
 have console && {
 _console_hosts()
@@ -21,11 +45,7 @@ _console_hosts()
 	opts=$(cat /etc/conserver.d/conserver_* | grep '^console' | awk '{print $2}')
 	COMPREPLY=($(compgen -W "${opts}" "${cur}"))
 }
-
-# If admin box console tab complete
-if [ -d /etc/conserver.d ] ; then
-	complete -F _console_hosts console
-fi
+complete -F _console_hosts console
 }
 
 # Perforce completion
