@@ -21,7 +21,7 @@ _sudo()
 	if [ $prev == "-u" ] ; then
 		opts=$(getent passwd | awk -F ':' '{print $1}')
 		COMPREPLY=($(compgen -W "${opts}" "${cur}"))
-	elif [ "${COMP_WORDS[1]}" == "-u" ] ; then
+	elif [[ "${COMP_WORDS[1]}" == "-u" ]] && [[ $COMP_CWORD -ge 3 ]] ; then
 		for (( i=1 ; i<=($COMP_CWORD-2) ; i++)) ; do
 			COMP_WORDS[i]=${COMP_WORDS[i+2]}
 		done
