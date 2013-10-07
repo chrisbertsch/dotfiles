@@ -202,7 +202,7 @@ start_ssh_agent()
 # Reset SSH agent after detaching and reattaching tmux
 reset_ssh_agent()
 {
-	if [[ -n $TMUX ]] && [[ ! -S $SSH_AUTH_SOCK ]]; then
+	if [[ -n $TMUX ]] && [[ ! -S $SSH_AUTH_SOCK ]] ; then
 		local new_ssh_auth_sock=$(tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2)
 		if [[ -n $new_ssh_auth_sock ]] && [[ -S $new_ssh_auth_sock ]] ; then
 			SSH_AUTH_SOCK=$new_ssh_auth_sock
@@ -225,10 +225,11 @@ extract() {
 			*.zip)		unzip $1	;;
 			*.Z)		uncompress $1	;;
 			*.7z)		7z x $1		;;
-			*)	echo "dont know what to do with '$1'..." ;;
+			*)	echo "Uknown Archive Type for '$1'"; return 2 ;;
 		esac
 	else
-		echo "'$1' is not a valid archive type"
+		echo "File Not Found '$1'"
+		return 1
 	fi
 }
 complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
