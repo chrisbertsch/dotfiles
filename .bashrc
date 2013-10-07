@@ -192,7 +192,7 @@ complete -F _ssh_hosts ssh xssh zssh xzssh
 # Start SSH agent
 start_ssh_agent()
 {
-	if [ -z $SSH_AUTH_SOCK ] ; then
+	if [ -z $SSH_AUTH_SOCK ] || [ ! -S $SSH_AUTH_SOCK ] ; then
 		eval `ssh-agent -s`
 		trap "kill $SSH_AGENT_PID" 0
 		ssh-add
@@ -202,7 +202,7 @@ start_ssh_agent()
 # Reset SSH agent after detaching and reattaching tmux
 reset_ssh_agent()
 {
-	if [[ -n $TMUX ]] ; then
+	if [[ -n $TMUX ]] && [[ ! -S $SSH_AUTH_SOCK ]]; then
 		local new_ssh_auth_sock=$(tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2)
 		if [[ -n $new_ssh_auth_sock ]] && [[ -S $new_ssh_auth_sock ]] ; then
 			SSH_AUTH_SOCK=$new_ssh_auth_sock
