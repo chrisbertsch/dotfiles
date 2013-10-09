@@ -160,12 +160,12 @@ _prompt_builder()
 	fi
 	PS1="${C08}\D{%Y-%m-%dT%H:%M:%S%z}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${pwdcolor}\w${C15}]${exitcode}${userprompt}${C00} "
 	PS2="${continueprompt}${C00} "
-	# Change screen/tmux window and xterm title names
+	# Change screen/tmux window and xterm/rxvt title names
 	case $TERM in
 		screen*)
 			echo -ne "\033k$title\033\\"
 			;;
-		xterm*)
+		xterm*|rxvt*)
 			echo -ne "\033]0;$title\007"
 			;;
 	esac
@@ -250,12 +250,12 @@ sudo_shim()
 	else
 		title="$suser@$HOST_NAME"
 	fi
-	# Change screen/tmux window and xterm title names
+	# Change screen/tmux window and xterm/rxvt title names
 	case $TERM in
 		screen*)
 			echo -ne "\033k$title\033\\"
 			;;
-		xterm*)
+		xterm*|rxvt*)
 			echo -ne "\033]0;$title\007"
 			;;
 	esac
