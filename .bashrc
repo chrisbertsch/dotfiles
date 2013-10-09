@@ -34,6 +34,9 @@ export TZ='America/New_York'
 export LANG='en_US.UTF-8'
 export OS_TYPE=$(uname)
 
+# Set Vi bindings
+set -o vi
+
 # When changing directory small typos can be ignored by bash
 # for example, cd /vr/lgo/apaache would find /var/log/apache
 shopt -s cdspell
