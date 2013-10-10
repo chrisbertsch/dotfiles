@@ -242,7 +242,7 @@ sudo_shim()
 {
 	local params suser oldterm title exitstatus
 	params=$@
-	suser=$(echo $params | grep -Eo '\-u \w+' | awk '{print $2}')
+	suser=$(echo $params | grep -Eo '\-u [a-z0-9_-]+' | awk '{print $2}')
 	oldterm=$TERM
 	# Change title to include user if sudoed
 	if [ -z $suser ] ; then
