@@ -1,0 +1,5 @@
+# Set DISPLAY
+export DISPLAY='localhost:0.0'
+
+# Start SSH Agent
+start_ssh_agent
