@@ -7,3 +7,4 @@ AllowBlinking=yes
 Scrollbar=none
 Locale=en_US
 Charset=UTF-8
+ScrollbackLines=10000
