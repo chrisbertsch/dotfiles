@@ -20,14 +20,15 @@ C16="\[\033[1;37m\]"	# white (bold)
 ################################################
 
 # Path edit function
-_pathedit () {
-if ! echo $PATH | grep -Eq "(^|:)$1($|:)" ; then
-	if [ "$2" = "after" ] ; then
-		PATH=$PATH:$1
-	else
-		PATH=$1:$PATH
+_pathedit ()
+{
+	if ! echo $PATH | grep -Eq "(^|:)$1($|:)" ; then
+		if [ "$2" == "after" ] ; then
+			PATH=$PATH:$1
+		else
+			PATH=$1:$PATH
+		fi
 	fi
-fi
 }
 
 # Set PATH so it includes user's private bin if it exists
