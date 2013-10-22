@@ -19,8 +19,27 @@ C16="\[\033[1;37m\]"	# white (bold)
 
 ################################################
 
+# Path edit function
+_pathedit () {
+if ! echo $PATH | grep -E -q "(^|:)$1($|:)" ; then
+	if [ "$2" = "after" ] ; then
+		PATH=$PATH:$1
+	else
+		PATH=$1:$PATH
+	fi
+fi
+}
+
 # Set PATH so it includes user's private bin if it exists
-[ -d $HOME/bin ] && PATH=$PATH:$HOME/bin
+[ -d $HOME/bin ] && _pathedit $HOME/bin after
+
+# More paths
+[ -d /usr/local/sbin ] && _pathedit /usr/local/sbin
+[ -d /usr/local/bin ] && _pathedit /usr/local/bin
+[ -d /usr/sbin ] && _pathedit /usr/sbin
+[ -d /usr/bin ] && _pathedit /usr/bin
+[ -d /sbin ] && _pathedit /sbin
+[ -d /bin ] && _pathedit /bin
 
 # This function checks whether we have a given program on the system.
 _have()
@@ -277,3 +296,4 @@ alias sudo='sudo_shim'
 [ -r $HOME/.bashrc-env ] && source $HOME/.bashrc-env
 
 unset -f _have
+unset -f _pathedit

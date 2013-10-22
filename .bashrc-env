@@ -1,6 +1,4 @@
-export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
 # Set PATH so it includes pebble dev bin if it exists
 if [[ $HOST_NAME == 'iceman' ]] && [[ -d $HOME/dev/pebble-dev/arm-cs-tools/bin ]] ; then
-	export PATH=$PATH:$HOME/dev/pebble-dev/arm-cs-tools/bin
+	_pathedit $HOME/dev/pebble-dev/arm-cs-tools/bin after
 fi
