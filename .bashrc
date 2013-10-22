@@ -21,7 +21,7 @@ C16="\[\033[1;37m\]"	# white (bold)
 
 # Path edit function
 _pathedit () {
-if ! echo $PATH | grep -E -q "(^|:)$1($|:)" ; then
+if ! echo $PATH | grep -Eq "(^|:)$1($|:)" ; then
 	if [ "$2" = "after" ] ; then
 		PATH=$PATH:$1
 	else
@@ -182,7 +182,6 @@ _prompt_builder()
 	# Change title
 	_set_title $title
 }
-
 
 # Change screen/tmux window and xterm/rxvt title names
 _set_title()
