@@ -1,0 +1,15 @@
+# Dell server admin tools
+[ -d /opt/dell/srvadmin/sbin ] && _pathedit /opt/dell/srvadmin/sbin after
+[ -d /opt/dell/srvadmin/bin ] && _pathedit /opt/dell/srvadmin/bin after
+
+# Couchbase
+[ -d /opt/couchbase/bin ] && _pathedit /opt/couchbase/bin after
+
+# Vertica
+[ -d /opt/vertica/bin ] && _pathedit /opt/vertica/bin after
+
+# NetBackup
+[ -d /usr/openv/netbackup/bin/goodies ] && _pathedit /usr/openv/netbackup/bin/goodies after
+[ -d /usr/openv/netbackup/bin/admincmd ] && _pathedit /usr/openv/netbackup/bin/admincmd after
+[ -d /usr/openv/netbackup/bin ] && _pathedit /usr/openv/netbackup/bin after
+[ -d /usr/openv/volmgr/bin ] && _pathedit /usr/openv/volmgr/bin after
