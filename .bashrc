@@ -63,6 +63,7 @@ export HISTSIZE=2000
 export HISTIGNORE='&:exit:*shutdown*:*reboot*'
 export HISTCONTROL='ignoreboth'
 export HISTTIMEFORMAT='%F %T '
+export HISTFILE=~/.bash_history
 shopt -s cmdhist
 shopt -s histappend
 
