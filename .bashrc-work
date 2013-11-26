@@ -1,3 +1,6 @@
+# CFEngine
+[ -d /var/cfengine/bin ] && _pathedit /var/cfengine/bin after
+
 # Dell server admin tools
 [ -d /opt/dell/srvadmin/sbin ] && _pathedit /opt/dell/srvadmin/sbin after
 [ -d /opt/dell/srvadmin/bin ] && _pathedit /opt/dell/srvadmin/bin after
@@ -8,8 +11,31 @@
 # Vertica
 [ -d /opt/vertica/bin ] && _pathedit /opt/vertica/bin after
 
-# NetBackup
+# Symantec NetBackup
 [ -d /usr/openv/netbackup/bin/goodies ] && _pathedit /usr/openv/netbackup/bin/goodies after
 [ -d /usr/openv/netbackup/bin/admincmd ] && _pathedit /usr/openv/netbackup/bin/admincmd after
 [ -d /usr/openv/netbackup/bin ] && _pathedit /usr/openv/netbackup/bin after
 [ -d /usr/openv/volmgr/bin ] && _pathedit /usr/openv/volmgr/bin after
+
+# IBM GPFS
+[ -d /usr/lpp/mmfs/bin ] && _pathedit /usr/lpp/mmfs/bin after
+
+# Shim for console to change TITLE
+_have console && {
+# Set console path env variable
+[ -z $CONSOLE_PATH ] && readonly CONSOLE_PATH=$(command -v console)
+console_shim()
+{
+	local params exitstatus
+	params=$@
+	# Change title
+	_set_title $params
+	# Execute console
+	if [[ -n $CONSOLE_PATH ]] && [[ -x $CONSOLE_PATH ]] ; then
+		$CONSOLE_PATH $params
+		exitstatus=$?
+	fi
+	return $exitstatus
+}
+alias console='console_shim'
+}
