@@ -59,11 +59,11 @@ export OS_TYPE=$(uname)
 shopt -s cdspell
 
 # Bash history settings
-export HISTSIZE=2000
-export HISTIGNORE='&:exit:*shutdown*:*reboot*'
-export HISTCONTROL='ignoreboth'
-export HISTTIMEFORMAT='%F %T '
-export HISTFILE=~/.bash_history
+HISTSIZE=2000
+HISTIGNORE='&:exit:*shutdown*:*reboot*'
+HISTCONTROL='ignoreboth'
+HISTTIMEFORMAT='%F %T '
+HISTFILE=~/.bash_history
 shopt -s cmdhist
 shopt -s histappend
 
