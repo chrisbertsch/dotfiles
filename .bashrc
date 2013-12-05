@@ -110,6 +110,12 @@ if _have mysql ; then
 	export MYSQL_PS1='[\u@\h:\p \d]> '
 fi
 
+# Go Lang
+if ! _have go && [ -d $HOME/go ] && [ -d $HOME/go/bin ]; then
+	export GOROOT=$HOME/go
+	_pathedit $HOME/go/bin after
+fi
+
 # Show grep in color
 export GREP_OPTIONS='--color=auto'
 
