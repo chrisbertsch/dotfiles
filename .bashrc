@@ -111,7 +111,7 @@ if _have mysql ; then
 fi
 
 # Go Lang
-if ! _have go && [ -d $HOME/go ] && [ -d $HOME/go/bin ] && [ "`uname`-`uname -m`" == "$(<$HOME/go/ARCH)" ] ; then
+if ! _have go && [ -d $HOME/go ] && [ -d $HOME/go/bin ] && [ -r $HOME/go/ARCH ] && [ "`uname`-`uname -m`" == "$(<$HOME/go/ARCH)" ] ; then
 	export GOROOT=$HOME/go
 	_pathedit $HOME/go/bin after
 fi
