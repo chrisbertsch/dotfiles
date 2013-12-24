@@ -174,7 +174,7 @@ _prompt_builder()
 		title="$USER@$HOST_NAME"
 	fi
 	# Change working directory color if writable
-	if [ -w $PWD ] ; then
+	if [ -w "$PWD" ] ; then
 		pwdcolor="${C08}"
 	else
 		pwdcolor="${C11}"
