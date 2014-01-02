@@ -58,6 +58,10 @@ export OS_TYPE=$(uname)
 # for example, cd /vr/lgo/apaache would find /var/log/apache
 shopt -s cdspell
 
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
 # Bash history settings
 HISTSIZE=2000
 HISTIGNORE='&:exit:*shutdown*:*reboot*'
