@@ -16,8 +16,6 @@ if _have tput ; then
 	C07=$(tput setaf 7 || tput AF 7)	# white
 fi
 
-################################################
-
 # Path edit function
 _pathedit ()
 {
@@ -51,7 +49,7 @@ export OS_TYPE=$(uname)
 # for example, cd /vr/lgo/apaache would find /var/log/apache
 shopt -s cdspell
 
-# check the window size after each command and, if necessary,
+# Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
