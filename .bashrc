@@ -1,21 +1,20 @@
+# This function checks whether we have a given program on the system.
+_have()
+{
+	command -v $1 &>/dev/null
+}
+
 # Set colors
-C00="\[\033[0m\]"	# default color or grey
-C01="\[\033[0;30m\]"	# black
-C02="\[\033[1;30m\]"	# dark grey (bold)
-C03="\[\033[0;31m\]"	# dark red
-C04="\[\033[1;31m\]"	# red (bold)
-C05="\[\033[0;32m\]"	# dark green
-C06="\[\033[1;32m\]"	# green (bold)
-C07="\[\033[0;33m\]"	# gold yellow
-C08="\[\033[1;33m\]"	# yellow (bold)
-C09="\[\033[0;34m\]"	# dark blue
-C10="\[\033[1;34m\]"	# blue (bold)
-C11="\[\033[0;35m\]"	# dark purple
-C12="\[\033[1;35m\]"	# purple (bold)
-C13="\[\033[0;36m\]"	# dark seagrean
-C14="\[\033[1;36m\]"	# seagreen (bold)
-C15="\[\033[0;37m\]"	# grey or regular white
-C16="\[\033[1;37m\]"	# white (bold)
+if _have tput ; then
+	C00=$(tput setaf 0 || tput AF 0)	# black
+	C01=$(tput setaf 1 || tput AF 1)	# red
+	C02=$(tput setaf 2 || tput AF 2)	# green
+	C03=$(tput setaf 3 || tput AF 3)	# yellow
+	C04=$(tput setaf 4 || tput AF 4)	# blue
+	C05=$(tput setaf 5 || tput AF 5)	# magenta
+	C06=$(tput setaf 6 || tput AF 6)	# cyan
+	C07=$(tput setaf 7 || tput AF 7)	# white
+fi
 
 ################################################
 
@@ -41,12 +40,6 @@ _pathedit ()
 [ -d /usr/bin ] && _pathedit /usr/bin
 [ -d /sbin ] && _pathedit /sbin
 [ -d /bin ] && _pathedit /bin
-
-# This function checks whether we have a given program on the system.
-_have()
-{
-	command -v $1 &>/dev/null
-}
 
 # Miscellaneous
 export PAGER='less'
@@ -161,15 +154,15 @@ _prompt_builder()
 	local exitstatus=$?
 	local userprompt continueprompt title pwdcolor exitcode
 	# Change prompt if root or sudoed
-	if [ $USER == 'root' ] ; then
-		userprompt="${C03}#"
-		continueprompt="${C03}>>"
+	if [ $USER = 'root' ] ; then
+		userprompt="${C01}#"
+		continueprompt="${C01}>>"
 	elif [ -z $SUDO_USER ] ; then
-		userprompt="${C09}>"
-		continueprompt="${C09}>>"
+		userprompt="${C04}>"
+		continueprompt="${C04}>>"
 	else
-		userprompt="${C07}$"
-		continueprompt="${C07}>>"
+		userprompt="${C03}$"
+		continueprompt="${C03}>>"
 	fi
 	# Change title to include user if sudoed
 	if [ -z $SUDO_USER ] ; then
@@ -179,17 +172,17 @@ _prompt_builder()
 	fi
 	# Change working directory color if writable
 	if [ -w "$PWD" ] ; then
-		pwdcolor="${C08}"
+		pwdcolor="${C03}"
 	else
-		pwdcolor="${C11}"
+		pwdcolor="${C05}"
 	fi
 	# Show exit status if not zero
 	if [ $exitstatus -ne 0 ] ; then
-		exitcode="${C03}[${exitstatus}]"
+		exitcode="${C01}[${exitstatus}]"
 	else
 		exitcode=""
 	fi
-	PS1="${C08}\D{%Y-%m-%dT%H:%M:%S%z}\n${C15}[${C05}\u${C09}@${C05}\h${C09}:${pwdcolor}\w${C15}]${exitcode}${userprompt}${C00} "
+	PS1="\[${C03}\]\D{%Y-%m-%dT%H:%M:%S%z}\n\[${C07}\][\[${C02}\]\u\[${C04}\]@\[${C02}\]\h\[${C04}\]:\[${pwdcolor}\]\w\[${C07}\]]\[${exitcode}\]\[${userprompt}\]\[${C07}\] "
 	PS2="${continueprompt}${C00} "
 	# Change title
 	_set_title $title
