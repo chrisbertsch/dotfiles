@@ -50,12 +50,12 @@ autoload -Uz compinit
 compinit
 
 # Zsh history settings
-export HISTSIZE=2000
-export SAVEHIST=2000
-export HISTIGNORE='&:exit:*shutdown*:*reboot*'
-export HISTCONTROL='ignoreboth'
-export HISTTIMEFORMAT='%F %T '
-export HISTFILE=~/.zsh_history
+HISTSIZE=2000
+SAVEHIST=2000
+HISTIGNORE='&:exit:*shutdown*:*reboot*'
+HISTCONTROL='ignoreboth'
+HISTTIMEFORMAT='%F %T '
+HISTFILE=~/.zsh_history
 setopt appendhistory
 
 # Mosh alias
