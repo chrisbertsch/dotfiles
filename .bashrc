@@ -80,6 +80,7 @@ alias ssh='ssh -A'
 alias xssh='ssh -X'
 alias zssh='ssh -C'
 alias xzssh='ssh -X -C'
+alias issh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 
 # Set LS_COLORS
 if _have dircolors ; then
@@ -215,7 +216,7 @@ _ssh_hosts()
 	opts=$(cat ${known_hosts} | awk -F "," '{print $1}' | awk '{print $1}' | uniq)
 	COMPREPLY=($(compgen -W "${opts}" "${cur}"))
 }
-complete -F _ssh_hosts ssh xssh zssh xzssh
+complete -F _ssh_hosts ssh xssh zssh xzssh issh
 
 # Start SSH agent
 start_ssh_agent()

@@ -68,6 +68,7 @@ alias ssh='ssh -A'
 alias xssh='ssh -X'
 alias zssh='ssh -C'
 alias xzssh='ssh -X -C'
+alias issh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 
 # Set LS_COLORS
 if _have dircolors ; then
