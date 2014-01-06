@@ -6,14 +6,14 @@ _have()
 
 # Set colors
 if _have tput ; then
-	C00=$(tput setaf 0 || tput AF 0)	# black
-	C01=$(tput setaf 1 || tput AF 1)	# red
-	C02=$(tput setaf 2 || tput AF 2)	# green
-	C03=$(tput setaf 3 || tput AF 3)	# yellow
-	C04=$(tput setaf 4 || tput AF 4)	# blue
-	C05=$(tput setaf 5 || tput AF 5)	# magenta
-	C06=$(tput setaf 6 || tput AF 6)	# cyan
-	C07=$(tput setaf 7 || tput AF 7)	# white
+	C00="\[$(tput setaf 0 || tput AF 0)\]"	# black
+	C01="\[$(tput setaf 1 || tput AF 1)\]"	# red
+	C02="\[$(tput setaf 2 || tput AF 2)\]"	# green
+	C03="\[$(tput setaf 3 || tput AF 3)\]"	# yellow
+	C04="\[$(tput setaf 4 || tput AF 4)\]"	# blue
+	C05="\[$(tput setaf 5 || tput AF 5)\]"	# magenta
+	C06="\[$(tput setaf 6 || tput AF 6)\]"	# cyan
+	C07="\[$(tput setaf 7 || tput AF 7)\]"	# white
 fi
 
 # Path edit function
@@ -180,7 +180,7 @@ _prompt_builder()
 	else
 		exitcode=""
 	fi
-	PS1="\[${C03}\]\D{%Y-%m-%dT%H:%M:%S%z}\n\[${C07}\][\[${C02}\]\u\[${C04}\]@\[${C02}\]\h\[${C04}\]:\[${pwdcolor}\]\w\[${C07}\]]\[${exitcode}\]\[${userprompt}\]\[${C07}\] "
+	PS1="${C03}\D{%Y-%m-%dT%H:%M:%S%z}\n${C07}[${C02}\u${C04}@${C02}\h${C04}:${pwdcolor}\w${C07}]${exitcode}${userprompt}${C07} "
 	PS2="${continueprompt}${C00} "
 	# Change title
 	_set_title $title
