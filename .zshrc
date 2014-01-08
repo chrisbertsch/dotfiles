@@ -4,23 +4,17 @@ _have()
 	command -v $1 &>/dev/null
 }
 
-# Set colors
-if _have tput ; then
-	C00="%{$(tput setaf 0 || tput AF 0)%}"	# black
-	C01="%{$(tput setaf 1 || tput AF 1)%}"	# red
-	C02="%{$(tput setaf 2 || tput AF 2)%}"	# green
-	C03="%{$(tput setaf 3 || tput AF 3)%}"	# yellow
-	C04="%{$(tput setaf 4 || tput AF 4)%}"	# blue
-	C05="%{$(tput setaf 5 || tput AF 5)%}"	# magenta
-	C06="%{$(tput setaf 6 || tput AF 6)%}"	# cyan
-	C07="%{$(tput setaf 7 || tput AF 7)%}"	# white
-fi
+# This function checks if interactive.
+_interactive()
+{
+	[[ $- == *i* ]]
+}
 
 # Path edit function
 _pathedit ()
 {
 	if ! echo $PATH | grep -Eq "(^|:)$1($|:)" ; then
-		if [ "$2" == "after" ] ; then
+		if [ "$2" = "after" ] ; then
 			PATH=$PATH:$1
 		else
 			PATH=$1:$PATH
@@ -38,6 +32,18 @@ _pathedit ()
 [ -d /usr/bin ] && _pathedit /usr/bin
 [ -d /sbin ] && _pathedit /sbin
 [ -d /bin ] && _pathedit /bin
+
+# Set colors
+if _interactive && _have tput ; then
+	C00="%{$(tput setaf 0 || tput AF 0)%}"	# black
+	C01="%{$(tput setaf 1 || tput AF 1)%}"	# red
+	C02="%{$(tput setaf 2 || tput AF 2)%}"	# green
+	C03="%{$(tput setaf 3 || tput AF 3)%}"	# yellow
+	C04="%{$(tput setaf 4 || tput AF 4)%}"	# blue
+	C05="%{$(tput setaf 5 || tput AF 5)%}"	# magenta
+	C06="%{$(tput setaf 6 || tput AF 6)%}"	# cyan
+	C07="%{$(tput setaf 7 || tput AF 7)%}"	# white
+fi
 
 # Miscellaneous
 export PAGER='less'
@@ -265,4 +271,5 @@ alias sudo='sudo_shim'
 [ -r $HOME/.bashrc-env ] && source $HOME/.bashrc-env
 
 unset -f _have
+unset -f _interactive
 unset -f _pathedit
