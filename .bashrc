@@ -35,6 +35,7 @@ _pathedit ()
 
 # Set colors
 if _interactive && _have tput ; then
+	CRESET="\[$(tput sgr0 || tput me)\]"	# reset all attributes
 	C00="\[$(tput setaf 0 || tput AF 0)\]"	# black
 	C01="\[$(tput setaf 1 || tput AF 1)\]"	# red
 	C02="\[$(tput setaf 2 || tput AF 2)\]"	# green
@@ -189,8 +190,8 @@ _prompt_builder()
 	else
 		exitcode=""
 	fi
-	PS1="${C03}\D{%Y-%m-%dT%H:%M:%S%z}\n${C07}[${C02}\u${C04}@${C02}\h${C04}:${pwdcolor}\w${C07}]${exitcode}${userprompt}${C07} "
-	PS2="${continueprompt}${C00} "
+	PS1="${CRESET}${C03}\D{%Y-%m-%dT%H:%M:%S%z}\n${C07}[${C02}\u${C04}@${C02}\h${C04}:${pwdcolor}\w${C07}]${exitcode}${userprompt}${CRESET} "
+	PS2="${CRESET}${continueprompt}${CRESET} "
 	# Change title
 	_set_title $title
 }
