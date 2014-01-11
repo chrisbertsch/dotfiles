@@ -200,10 +200,10 @@ _set_title()
 {
         case $TERM in
                 screen*)
-                        echo -ne "\033k$1\033\\"
+                        echo -ne "\ek$1\e\\"
                         ;;
                 xterm*|rxvt*)
-                        echo -ne "\033]0;$1\007"
+                        echo -ne "\e]0;$1\a"
                         ;;
         esac
 }
