@@ -124,28 +124,28 @@ fi
 # Show grep in color
 export GREP_OPTIONS='--color=auto'
 
+# Set HOST_NAME environment variable
+if _have hostname ; then
+	export HOST_NAME=$(hostname -s)
+elif _have uname ; then
+	export HOST_NAME=$(uname -n)
+fi
+
 # OS specific settings
 case $OS_TYPE in
 	Linux)
-		export HOST_NAME=$(uname -n)
 		alias ls='ls --color=auto'
 		;;
 	CYGWIN*)
-		export HOST_NAME=$(uname -n)
 		alias ls='ls --color=auto'
 		;;
 	Darwin)
-		export HOST_NAME=$(hostname -s)
 		alias ls='ls -G'
 		export CLICOLOR=1
 		;;
 	FreeBSD)
-		export HOST_NAME=$(hostname -s)
 		alias ls='ls -G'
 		export CLICOLOR=1
-		;;
-	SunOS)
-		export HOST_NAME=$(uname -n)
 		;;
 esac
 
