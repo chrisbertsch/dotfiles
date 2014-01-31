@@ -13,7 +13,7 @@ _interactive()
 # Path edit function
 _pathedit ()
 {
-	if ! echo $PATH | grep -Eq "(^|:)$1($|:)" ; then
+	if ! echo $PATH | grep -Eq "(^|:)$1($|:)" &>/dev/null ; then
 		if [ "$2" = "after" ] ; then
 			PATH=$PATH:$1
 		else
@@ -34,7 +34,7 @@ _pathedit ()
 [ -d /bin ] && _pathedit /bin
 
 # Set colors
-if _interactive && _have tput ; then
+if _interactive && _have tput && (tput sgr0 &>/dev/null || tput me &>/dev/null) ; then
 	CRESET="\[$(tput sgr0 || tput me)\]"	# reset all attributes
 	C00="\[$(tput setaf 0 || tput AF 0)\]"	# black
 	C01="\[$(tput setaf 1 || tput AF 1)\]"	# red
@@ -199,14 +199,16 @@ _prompt_builder()
 # Change screen/tmux window and xterm/rxvt title names
 _set_title()
 {
-        case $TERM in
-                screen*)
-                        echo -ne "\ek$1\e\\"
-                        ;;
-                xterm*|rxvt*)
-                        echo -ne "\e]0;$1\a"
-                        ;;
-        esac
+	if [ -n "$1" ] ; then
+		case $TERM in
+			screen*)
+				echo -ne "\ek$1\e\\"
+				;;
+			xterm*|rxvt*)
+				echo -ne "\e]0;$1\a"
+				;;
+		esac
+	fi
 }
 
 # SSH completion
