@@ -13,7 +13,7 @@ _interactive()
 # Path edit function
 _pathedit ()
 {
-	if ! echo $PATH | grep -Eq "(^|:)$1($|:)" ; then
+	if ! echo $PATH | grep -Eq "(^|:)$1($|:)" &>/dev/null ; then
 		if [ "$2" = "after" ] ; then
 			PATH=$PATH:$1
 		else
@@ -34,7 +34,7 @@ _pathedit ()
 [ -d /bin ] && _pathedit /bin
 
 # Set colors
-if _interactive && _have tput ; then
+if _interactive && _have tput && (tput sgr0 &>/dev/null || tput me &>/dev/null) ; then
 	CRESET="%{$(tput sgr0 || tput me)%}"    # reset all attributes
 	C00="%{$(tput setaf 0 || tput AF 0)%}"	# black
 	C01="%{$(tput setaf 1 || tput AF 1)%}"	# red
@@ -110,28 +110,28 @@ fi
 # Show grep in color
 export GREP_OPTIONS='--color=auto'
 
+# Set HOST_NAME environment variable   
+if _have hostname ; then               
+	export HOST_NAME=$(hostname -s)
+elif _have uname ; then                
+	export HOST_NAME=$(uname -n)   
+fi                                     
+
 # OS specific settings
 case $OS_TYPE in
 	Linux)
-		export HOST_NAME=$(uname -n)
 		alias ls='ls --color=auto'
 		;;
 	CYGWIN*)
-		export HOST_NAME=$(uname -n)
 		alias ls='ls --color=auto'
 		;;
 	Darwin)
-		export HOST_NAME=$(hostname -s)
 		alias ls='ls -G'
 		export CLICOLOR=1
 		;;
 	FreeBSD)
-		export HOST_NAME=$(hostname -s)
 		alias ls='ls -G'
 		export CLICOLOR=1
-		;;
-	SunOS)
-		export HOST_NAME=$(uname -n)
 		;;
 esac
 
@@ -182,14 +182,16 @@ ${C07}[${C02}%n${C04}@${C02}%m${C04}:${pwdcolor}%~${C07}]${exitcode}${userprompt
 # Change screen/tmux window and xterm/rxvt title names
 _set_title()
 {
-        case $TERM in
-                screen*)
-                        echo -ne "\ek$1\e\\"
-                        ;;
-                xterm*|rxvt*)
-                        echo -ne "\e]0;$1\a"
-                        ;;
-        esac
+	if [ -n "$1" ] ; then        
+		case $TERM in
+			screen*)
+				echo -ne "\ek$1\e\\"
+				;;
+			xterm*|rxvt*)
+				echo -ne "\e]0;$1\a"
+				;;
+		esac
+	fi
 }
 
 # Start SSH agent
