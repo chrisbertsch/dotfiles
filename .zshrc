@@ -111,11 +111,7 @@ fi
 export GREP_OPTIONS='--color=auto'
 
 # Set HOST_NAME environment variable   
-if _have hostname ; then               
-	export HOST_NAME=$(hostname -s)
-elif _have uname ; then                
-	export HOST_NAME=$(uname -n)   
-fi                                     
+export HOST_NAME=$(uname -n | awk -F. '{print $1}')
 
 # OS specific settings
 case $OS_TYPE in
