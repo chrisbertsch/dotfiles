@@ -6,3 +6,5 @@
 [user]
 	name = Christopher Bertsch
 	email = git@chrisbertsch.net
+[color]
+	ui = true
