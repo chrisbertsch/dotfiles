@@ -19,7 +19,7 @@ _sudo()
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	if [ $prev == "-u" ] ; then
-		opts=$(getent passwd | awk -F ':' '{print $1}')
+		opts=$(getent passwd | cut -d: -f1)
 		COMPREPLY=($(compgen -W "${opts}" "${cur}"))
 	elif [[ "${COMP_WORDS[1]}" == "-u" ]] && [[ $COMP_CWORD -ge 3 ]] ; then
 		for (( i=1 ; i<=($COMP_CWORD-2) ; i++)) ; do
@@ -41,7 +41,7 @@ _console_hosts()
 	local prev cur opts
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	cur="${COMP_WORDS[COMP_CWORD]}"
-	opts=$(cat /etc/conserver.d/conserver_* | grep '^console' | awk '{print $2}')
+	[ -r /etc/conserver.d ] && opts=$(awk '$1 ~ /^console/ {print $2}' /etc/conserver.d/conserver_*)
 	COMPREPLY=($(compgen -W "${opts}" "${cur}"))
 }
 complete -F _console_hosts console

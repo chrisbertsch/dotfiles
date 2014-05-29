@@ -207,14 +207,9 @@ _ssh_hosts()
 	local prev cur opts known_hosts
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	cur="${COMP_WORDS[COMP_CWORD]}"
-	known_hosts="/dev/null"
-	if [ -r /etc/ssh/ssh_known_hosts ] ; then
-		known_hosts="/etc/ssh/ssh_known_hosts ${known_hosts} "
-	fi
-	if [ -r $HOME/.ssh/known_hosts ] ; then
-		known_hosts="$HOME/.ssh/known_hosts ${known_hosts} "
-	fi
-	opts=$(cat ${known_hosts} | awk -F "," '{print $1}' | awk '{print $1}' | uniq)
+	[ -r "/etc/ssh/ssh_known_hosts" ] && known_hosts="/etc/ssh/ssh_known_hosts"
+	[ -r "$HOME/.ssh/known_hosts" ] && known_hosts="$HOME/.ssh/known_hosts ${known_hosts} "
+	[ -n "$known_hosts" ] && opts=$(grep -Eoh -e '^\w+' -e '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' ${known_hosts})
 	COMPREPLY=($(compgen -W "${opts}" "${cur}"))
 }
 complete -F _ssh_hosts ssh xssh zssh xzssh issh
