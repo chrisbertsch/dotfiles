@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# This function checks whether we have a given program on the system.
+have()
+{
+        command -v $1 &>/dev/null
+}
+
+nc_http()
+{
+if [ -z "$1" ] ; then echo "usage: $0 PORT" ; exit 1 ; fi
+hostname=$(uname -n)
+while true ; do
+datetime=$(date +"%Y-%m-%dT%H:%M:%S%z")
+nc -v -l $1 <<EOF
+HTTP/1.1 200 OK
+
+<HTML>
+<HEAD>
+<TITLE>TESTING TITLE</TITLE>
+</HEAD>
+<BODY>
+<P>TESTING BODY</P>
+<P>HOST: $hostname</P>
+<P>PORT: $1</P>
+<P>TIME: $datetime</P>
+</BODY>
+</HTML>
+EOF
+if [ $? -ne 0 ] ; then exit 2 ; fi
+echo -e '\E[5m\E[31mCLOSED\E[m\017'
+done
+}
+
+(have uname && have date && have nc) && nc_http $1 || echo "error: Check that uname, date and nc are installed."
