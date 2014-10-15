@@ -11,7 +11,6 @@ get_stock()
 {
 	local ticker datetime tmp_file url price c cp color
 	ticker=$(echo $@ | sed 's/ /+/g')
-	datetime=$(date +'%s')
 	tmp_file=$(mktemp)
 	url="http://www.google.com/finance?q=$ticker"
 	# Attempt to use curl
