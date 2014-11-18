@@ -105,7 +105,7 @@ fi
 export GREP_OPTIONS='--color=auto'
 
 # Set HOST_NAME environment variable   
-export HOST_NAME=$(uname -n | awk -F. '{print $1}')
+export HOST_NAME=$(uname -n | cut -d . -f 1)
 
 # OS specific settings
 case $OS_TYPE in
@@ -236,7 +236,7 @@ sudo_shim()
 {
 	local params suser oldterm title exitstatus
 	params=$@
-	suser=$(echo $params | grep -Eo '\-u [a-z0-9_-]+' | awk '{print $2}' | head -n 1)
+	suser=$(echo $params | grep -Eo '\-u [a-z0-9_-]+' | cut -d ' ' -f 2 | head -n 1)
 	oldterm=$TERM
 	# Change title to include user if sudoed
 	if [ -z $suser ] ; then
