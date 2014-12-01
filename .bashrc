@@ -116,7 +116,7 @@ if _have mysql ; then
 fi
 
 # Show grep in color
-export GREP_OPTIONS='--color=auto'
+alias grep='grep --color=auto'
 
 # Set HOST_NAME environment variable
 export HOST_NAME=$(uname -n | cut -d . -f 1)
