@@ -96,6 +96,17 @@ else
 	export VISUAL='vi'
 fi
 
+# Default web browser
+if [ -n $DISPLAY ] && _have chromium-browser ; then
+        export BROWSER='chromium-browser'
+elif [ -n $DISPLAY ] && _have firefox ; then
+        export BROWSER='firefox'
+elif _have elinks ; then
+        export BROWSER='elinks'
+elif _have links ; then
+        export BROWSER='links'
+fi
+
 # MySQL prompt
 if _have mysql ; then
 	export MYSQL_PS1='[\u@\h:\p \d]> '
