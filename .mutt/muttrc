@@ -1,0 +1,62 @@
+source ~/.mutt/muttrc-env
+
+set imap_pass = $my_pass
+set smtp_pass = $my_pass
+set imap_user = $my_user
+set from = $my_user
+set smtp_url = "smtp://$my_user@smtp.gmail.com:587/"
+
+set folder      = "imaps://imap.gmail.com:993/"
+set spoolfile   = "+INBOX"
+set record      = "+[Gmail]/Sent Mail"
+set postponed   = "+[Gmail]/Drafts"
+set trash       = "+[Gmail]/Trash"
+set imap_check_subscribed = yes
+set imap_keepalive = 210
+set mail_check = 120
+set timeout = 300
+set copy = no
+
+set ssl_starttls = yes
+set ssl_force_tls = yes
+
+set header_cache = "~/.mutt/cache/headers"
+set message_cachedir = "~/.mutt/cache/bodies"
+set certificate_file = "~/.mutt/certificates"
+set signature = "~/.mutt/signature"
+
+set alias_file = "~/.mutt/aliases"
+set sort_alias = alias
+set reverse_alias = yes
+source $alias_file
+
+set include = yes
+set sort= "threads"
+set sort_browser = "alpha"
+set sort_aux= "reverse-last-date-received"
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+set pgp_autosign = yes
+set pgp_good_sign="^gpg: Good signature from"
+set pgp_replyencrypt = yes
+set pgp_replyinline = yes
+set pgp_replysignencrypted = yes
+set pgp_replysign = yes
+set pgp_sort_keys = address
+set pgp_timeout = 60
+set pgp_use_gpg_agent = yes
+set pgp_verify_sig = yes
+
+set pgp_clearsign_command="gpg2 --no-verbose --batch --output - --armor --textmode --clearsign %?a?-u %a? %f"
+set pgp_decode_command="gpg2 --no-verbose --batch --output - %f"
+set pgp_decrypt_command="gpg2 --no-verbose --batch --output - %f"
+set pgp_encrypt_only_command="/usr/lib/mutt/pgpewrap gpg2 --batch --quiet --no-verbose --output - --encrypt --textmode --armor --always-trust -- -r %r -- %f"
+set pgp_encrypt_sign_command="/usr/lib/mutt/pgpewrap gpg2 --batch --quiet --no-verbose --textmode --output - --encrypt --sign %?a?-u %a? --armor --always-trust -- -r %r -- %f"
+set pgp_export_command="gpg2 --no-verbose --export --armor %r"
+set pgp_import_command="gpg2 --no-verbose --import -v %f"
+set pgp_list_pubring_command="gpg2 --no-verbose --batch --with-colons --list-keys %r"
+set pgp_list_secring_command="gpg2 --no-verbose --batch --with-colons --list-secret-keys %r"
+set pgp_sign_command="gpg2 --no-verbose --batch --output - --armor --detach-sign --textmode %?a?-u %a? %f"
+set pgp_verify_command="gpg2 --no-verbose --batch --output - --verify %s %f"
+set pgp_verify_key_command="gpg2 --no-verbose --batch --fingerprint --check-sigs %r"

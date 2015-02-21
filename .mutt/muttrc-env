@@ -1,0 +1,8 @@
+set realname = "FirstName LastName"
+set my_user = "someone@gmail.com"
+set my_pass = `gpg2 -d ~/.mutt/.pass.gpg | grep pass: | cut -d' ' -f 2-`
+set pgp_sign_as = "########"
+
+set sidebar_visible = yes
+set sidebar_width = 30
+set xterm_set_titles = yes
