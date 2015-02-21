@@ -80,9 +80,9 @@ alias issh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 # Set LS_COLORS
 if _have dircolors ; then
 	if [ -r $HOME/.dir_colors ] ; then
-		eval `dircolors -b $HOME/.dir_colors`
+		eval $(dircolors -b $HOME/.dir_colors)
 	else
-		eval `dircolors -b`
+		eval $(dircolors -b)
 	fi
 fi
 
@@ -188,7 +188,7 @@ _set_title()
 start_ssh_agent()
 {
 	if [ -z $SSH_AUTH_SOCK ] || [ ! -S $SSH_AUTH_SOCK ] ; then
-		eval `ssh-agent -s`
+		eval $(ssh-agent -s)
 		trap "kill $SSH_AGENT_PID" 0
 		ssh-add
 	fi
@@ -202,6 +202,16 @@ reset_ssh_agent()
 		if [[ -n $new_ssh_auth_sock ]] && [[ -S $new_ssh_auth_sock ]] ; then
 			SSH_AUTH_SOCK=$new_ssh_auth_sock
 		fi
+	fi
+}
+
+# Start GPG agent
+start_gpg_agent()
+{
+	if [ -z $GPG_AGENT_INFO ] || [ ! -S $(echo $GPG_AGENT_INFO | cut -d: -f 1) ] ; then
+		export GPG_TTY=$(tty)
+		eval $(gpg-agent --daemon)
+		trap "kill $(echo $GPG_AGENT_INFO | cut -d: -f 2)" 0
 	fi
 }
 
