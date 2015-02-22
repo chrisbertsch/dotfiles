@@ -23,7 +23,7 @@ _pathedit ()
 }
 
 # Set PATH so it includes user's private bin if it exists
-[ -d $HOME/bin ] && _pathedit $HOME/bin after
+[ -d ~/bin ] && _pathedit ~/bin after
 
 # More paths
 [ -d /usr/local/sbin ] && _pathedit /usr/local/sbin
@@ -79,8 +79,8 @@ alias issh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 
 # Set LS_COLORS
 if _have dircolors ; then
-	if [ -r $HOME/.dir_colors ] ; then
-		eval $(dircolors -b $HOME/.dir_colors)
+	if [ -r ~/.dir_colors ] ; then
+		eval $(dircolors -b ~/.dir_colors)
 	else
 		eval $(dircolors -b)
 	fi
@@ -282,7 +282,7 @@ alias sudo='sudo_shim'
 }
 
 # Include .bashrc-env if it exists for environment specific settings
-[ -r $HOME/.bashrc-env ] && source $HOME/.bashrc-env
+[ -r ~/.bashrc-env ] && source ~/.bashrc-env
 
 unset -f _have
 unset -f _interactive
