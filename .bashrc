@@ -111,9 +111,9 @@ else
 fi
 
 # Default web browser
-if [ -n $DISPLAY ] && _have chromium-browser ; then
+if [ -n "$DISPLAY" ] && _have chromium-browser ; then
 	export BROWSER='chromium-browser'
-elif [ -n $DISPLAY ] && _have firefox ; then
+elif [ -n "$DISPLAY" ] && _have firefox ; then
 	export BROWSER='firefox'
 elif _have elinks ; then
 	export BROWSER='elinks'
@@ -151,7 +151,7 @@ case $OS_TYPE in
 esac
 
 # Dynamic prompt and auto reset of ssh agent if in tmux
-if [[ -n $TMUX ]] ; then
+if [ -n "$TMUX" ] ; then
 	PROMPT_COMMAND='_prompt_builder; reset_ssh_agent;'
 else
 	PROMPT_COMMAND='_prompt_builder;'
@@ -163,10 +163,10 @@ _prompt_builder()
 	local exitstatus=$?
 	local userprompt continueprompt title pwdcolor exitcode
 	# Change prompt if root or sudoed
-	if [ $USER = 'root' ] ; then
+	if [ "$USER" = "root" ] ; then
 		userprompt="${C01}#"
 		continueprompt="${C01}>>"
-	elif [ -z $SUDO_USER ] ; then
+	elif [ -z "$SUDO_USER" ] ; then
 		userprompt="${C04}>"
 		continueprompt="${C04}>>"
 	else
@@ -174,7 +174,7 @@ _prompt_builder()
 		continueprompt="${C03}>>"
 	fi
 	# Change title to include user if sudoed
-	if [ -z $SUDO_USER ] ; then
+	if [ -z "$SUDO_USER" ] ; then
 		title="$HOST_NAME"
 	else
 		title="$USER@$HOST_NAME"
@@ -228,7 +228,7 @@ complete -F _ssh_hosts ssh xssh zssh xzssh issh
 # Start SSH agent
 start_ssh_agent()
 {
-	if [ -z $SSH_AUTH_SOCK ] || [ ! -S $SSH_AUTH_SOCK ] ; then
+	if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] ; then
 		eval $(ssh-agent -s)
 		trap "kill $SSH_AGENT_PID" 0
 		ssh-add
@@ -238,9 +238,9 @@ start_ssh_agent()
 # Reset SSH agent after detaching and reattaching tmux
 reset_ssh_agent()
 {
-	if [[ -n $TMUX ]] && [[ ! -S $SSH_AUTH_SOCK ]] ; then
+	if [ -n "$TMUX" ] && [ ! -S "$SSH_AUTH_SOCK" ] ; then
 		local new_ssh_auth_sock=$(tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2)
-		if [[ -n $new_ssh_auth_sock ]] && [[ -S $new_ssh_auth_sock ]] ; then
+		if [ -n "$new_ssh_auth_sock" ] && [ -S "$new_ssh_auth_sock" ] ; then
 			SSH_AUTH_SOCK=$new_ssh_auth_sock
 		fi
 	fi
@@ -249,7 +249,7 @@ reset_ssh_agent()
 # Start GPG agent
 start_gpg_agent()
 {
-	if [ -z $GPG_AGENT_INFO ] || [ ! -S $(echo $GPG_AGENT_INFO | cut -d: -f 1) ] ; then
+	if [ -z "$GPG_AGENT_INFO" ] || [ ! -S $(echo $GPG_AGENT_INFO | cut -d: -f 1) ] ; then
 		export GPG_TTY=$(tty)
 		eval $(gpg-agent --daemon)
 		trap "kill $(echo $GPG_AGENT_INFO | cut -d: -f 2)" 0
@@ -258,7 +258,7 @@ start_gpg_agent()
 
 # Function for extracting files
 extract() {
-	if [ -f $1 ] ; then
+	if [ -f "$1" ] ; then
 		case $1 in
 			*.tar.bz2)	tar xvjf $1	;;
 			*.tar.gz)	tar xvzf $1	;;
@@ -283,7 +283,7 @@ complete -f -X '!*.@(tar.bz2|tar.gz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)' extract
 # Shim for sudo to change TITLE and TERM
 _have sudo && {
 # Set sudo path env variable
-[ -z $SUDO_PATH ] && readonly SUDO_PATH=$(command -v sudo)
+[ -z "$SUDO_PATH" ] && readonly SUDO_PATH=$(command -v sudo)
 sudo_shim()
 {
 	local params suser oldterm title exitstatus
@@ -291,7 +291,7 @@ sudo_shim()
 	suser=$(echo $params | grep -Eo '\-u [a-z0-9_-]+' | cut -d ' ' -f 2 | head -n 1)
 	oldterm=$TERM
 	# Change title to include user if sudoed
-	if [ -z $suser ] ; then
+	if [ -z "$suser" ] ; then
 		title="root@$HOST_NAME"
 	else
 		title="$suser@$HOST_NAME"
@@ -301,7 +301,7 @@ sudo_shim()
 	# Set TERM to xterm
 	TERM='xterm'
 	# Execute sudo
-	if [[ -n $SUDO_PATH ]] && [[ -x $SUDO_PATH ]] ; then
+	if [ -n "$SUDO_PATH" ] && [ -x "$SUDO_PATH" ] ; then
 		$SUDO_PATH $params
 		exitstatus=$?
 	fi

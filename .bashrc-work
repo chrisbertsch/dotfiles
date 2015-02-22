@@ -23,7 +23,7 @@
 # Shim for console to change TITLE
 _have console && {
 # Set console path env variable
-[ -z $CONSOLE_PATH ] && readonly CONSOLE_PATH=$(command -v console)
+[ -z "$CONSOLE_PATH" ] && readonly CONSOLE_PATH=$(command -v console)
 console_shim()
 {
 	local params exitstatus
@@ -31,7 +31,7 @@ console_shim()
 	# Change title
 	_set_title $params
 	# Execute console
-	if [[ -n $CONSOLE_PATH ]] && [[ -x $CONSOLE_PATH ]] ; then
+	if [ -n "$CONSOLE_PATH" ] && [ -x "$CONSOLE_PATH" ] ; then
 		$CONSOLE_PATH $params
 		exitstatus=$?
 	fi

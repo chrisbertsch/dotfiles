@@ -26,7 +26,7 @@ get_stock()
 		return 2
 	fi
 	# Scrape page
-	if [ -r $tmp_file ] ; then
+	if [ -r "$tmp_file" ] ; then
 		price=$(cat $tmp_file | grep -m1 -E 'span id="ref_' | awk -F ">" '{print $2}' | awk -F "<" '{print $1}')
 		c=$(cat $tmp_file | grep -m1 -E 'ref_.*_c' | awk -F "c\">" '{print $2}' | awk -F "</" '{print $1}')
 		cp=$(cat $tmp_file | grep -m1 -E 'ref_.*_cp' | awk -F "(" '{print $2}' | awk -F ")" '{print $1}')
@@ -38,7 +38,7 @@ get_stock()
 	else
 		color="\e[1;32m"
 	fi
-	if [[ -n $price ]] ; then
+	if [ -n "$price" ] ; then
 		echo -e "\$$price $color$c $cp\e[0m"
 		return 0
 	else
