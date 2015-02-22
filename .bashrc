@@ -218,8 +218,8 @@ _ssh_hosts()
 	local prev cur opts known_hosts
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	cur="${COMP_WORDS[COMP_CWORD]}"
-	[ -r "/etc/ssh/ssh_known_hosts" ] && known_hosts="/etc/ssh/ssh_known_hosts"
-	[ -r "~/.ssh/known_hosts" ] && known_hosts="~/.ssh/known_hosts ${known_hosts} "
+	[ -r /etc/ssh/ssh_known_hosts ] && known_hosts="/etc/ssh/ssh_known_hosts"
+	[ -r ~/.ssh/known_hosts ] && known_hosts="$HOME/.ssh/known_hosts ${known_hosts}"
 	[ -n "$known_hosts" ] && opts=$(grep -Eoh -e '^\w+' -e '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' ${known_hosts})
 	COMPREPLY=($(compgen -W "${opts}" "${cur}"))
 }
