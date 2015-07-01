@@ -13,25 +13,28 @@ _interactive()
 # Path edit function
 _pathedit ()
 {
-	if ! echo $PATH | grep -Eq "(^|:)$1($|:)" &>/dev/null ; then
-		if [ "$2" = "after" ] ; then
-			PATH=$PATH:$1
+		if ! echo $1 | grep -Eq "(^|:)$2($|:)" &>/dev/null ; then
+				if [ "$3" = "after" ] ; then
+						echo $1:$2
+				else
+						echo $2:$1
+				fi
 		else
-			PATH=$1:$PATH
+				echo $1
 		fi
-	fi
 }
 
 # Set PATH so it includes user's private bin if it exists
-[ -d ~/bin ] && _pathedit ~/bin after
+[ -d ~/bin ] && PATH=$(_pathedit $PATH ~/bin after)
+[ -d ~/.local/bin ] && PATH=$(_pathedit $PATH ~/.local/bin after)
 
 # More paths
-[ -d /usr/local/sbin ] && _pathedit /usr/local/sbin
-[ -d /usr/local/bin ] && _pathedit /usr/local/bin
-[ -d /usr/sbin ] && _pathedit /usr/sbin
-[ -d /usr/bin ] && _pathedit /usr/bin
-[ -d /sbin ] && _pathedit /sbin
-[ -d /bin ] && _pathedit /bin
+[ -d /usr/local/sbin ] && PATH=$(_pathedit $PATH /usr/local/sbin)
+[ -d /usr/local/bin ] && PATH=$(_pathedit $PATH /usr/local/bin)
+[ -d /usr/sbin ] && PATH=$(_pathedit $PATH /usr/sbin)
+[ -d /usr/bin ] && PATH=$(_pathedit $PATH /usr/bin)
+[ -d /sbin ] && PATH=$(_pathedit $PATH /sbin)
+[ -d /bin ] && PATH=$(_pathedit $PATH /bin)
 
 # Set colors
 if _interactive && _have tput && (tput sgr0 &>/dev/null || tput me &>/dev/null) ; then

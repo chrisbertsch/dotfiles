@@ -1,24 +1,12 @@
 # CFEngine
-[ -d /var/cfengine/bin ] && _pathedit /var/cfengine/bin after
+[ -d /var/cfengine/bin ] && PATH=$(_pathedit $PATH /var/cfengine/bin after)
 
 # Dell server admin tools
-[ -d /opt/dell/srvadmin/sbin ] && _pathedit /opt/dell/srvadmin/sbin after
-[ -d /opt/dell/srvadmin/bin ] && _pathedit /opt/dell/srvadmin/bin after
+[ -d /opt/dell/srvadmin/sbin ] && PATH=$(_pathedit $PATH /opt/dell/srvadmin/sbin after)
+[ -d /opt/dell/srvadmin/bin ] && PATH=$(_pathedit $PATH /opt/dell/srvadmin/bin after)
 
 # Couchbase
-[ -d /opt/couchbase/bin ] && _pathedit /opt/couchbase/bin after
-
-# Vertica
-[ -d /opt/vertica/bin ] && _pathedit /opt/vertica/bin after
-
-# Symantec NetBackup
-[ -d /usr/openv/netbackup/bin/goodies ] && _pathedit /usr/openv/netbackup/bin/goodies after
-[ -d /usr/openv/netbackup/bin/admincmd ] && _pathedit /usr/openv/netbackup/bin/admincmd after
-[ -d /usr/openv/netbackup/bin ] && _pathedit /usr/openv/netbackup/bin after
-[ -d /usr/openv/volmgr/bin ] && _pathedit /usr/openv/volmgr/bin after
-
-# IBM GPFS
-[ -d /usr/lpp/mmfs/bin ] && _pathedit /usr/lpp/mmfs/bin after
+[ -d /opt/couchbase/bin ] && PATH=$(_pathedit $PATH /opt/couchbase/bin after)
 
 # Shim for console to change TITLE
 _have console && {

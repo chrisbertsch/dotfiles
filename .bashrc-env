@@ -1,4 +1,4 @@
 # Set PATH so it includes pebble dev bin if it exists
 if [ "$HOST_NAME" = "iceman" ] && [ -d ~/dev/pebble-dev/arm-cs-tools/bin ] ; then
-	_pathedit ~/dev/pebble-dev/arm-cs-tools/bin after
+	PATH=$(_pathedit $PATH ~/dev/pebble-dev/arm-cs-tools/bin after)
 fi
