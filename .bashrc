@@ -36,6 +36,11 @@ _pathedit ()
 [ -d /sbin ] && PATH=$(_pathedit $PATH /sbin)
 [ -d /bin ] && PATH=$(_pathedit $PATH /bin)
 
+# Man paths
+_have manpath && export MANPATH=$(manpath 2>/dev/null)
+[ -d ~/man ] && MANPATH=$(_pathedit $MANPATH ~/man after)
+[ -d ~/.local/man ] && MANPATH=$(_pathedit $MANPATH ~/.local/man after)
+
 # Set colors
 if _interactive && _have tput && (tput sgr0 &>/dev/null || tput me &>/dev/null) ; then
 	CRESET="\[$(tput sgr0 || tput me)\]"	# reset all attributes

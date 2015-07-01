@@ -20,7 +20,7 @@ _pathedit ()
 						echo $2:$1
 				fi
 		else
-				echo $1
+			echo $1
 		fi
 }
 
@@ -35,6 +35,11 @@ _pathedit ()
 [ -d /usr/bin ] && PATH=$(_pathedit $PATH /usr/bin)
 [ -d /sbin ] && PATH=$(_pathedit $PATH /sbin)
 [ -d /bin ] && PATH=$(_pathedit $PATH /bin)
+
+# Man paths
+_have manpath && export MANPATH=$(manpath 2>/dev/null)
+[ -d ~/man ] && MANPATH=$(_pathedit $MANPATH ~/man after)
+[ -d ~/.local/man ] && MANPATH=$(_pathedit $MANPATH ~/.local/man after)
 
 # Set colors
 if _interactive && _have tput && (tput sgr0 &>/dev/null || tput me &>/dev/null) ; then
