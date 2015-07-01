@@ -1,12 +1,12 @@
 # CFEngine
-[ -d /var/cfengine/bin ] && PATH=$(_pathedit $PATH /var/cfengine/bin after)
+[ -d /var/cfengine/bin ] && PATH=$(_pathedit "$PATH" /var/cfengine/bin after)
 
 # Dell server admin tools
-[ -d /opt/dell/srvadmin/sbin ] && PATH=$(_pathedit $PATH /opt/dell/srvadmin/sbin after)
-[ -d /opt/dell/srvadmin/bin ] && PATH=$(_pathedit $PATH /opt/dell/srvadmin/bin after)
+[ -d /opt/dell/srvadmin/sbin ] && PATH=$(_pathedit "$PATH" /opt/dell/srvadmin/sbin after)
+[ -d /opt/dell/srvadmin/bin ] && PATH=$(_pathedit "$PATH" /opt/dell/srvadmin/bin after)
 
 # Couchbase
-[ -d /opt/couchbase/bin ] && PATH=$(_pathedit $PATH /opt/couchbase/bin after)
+[ -d /opt/couchbase/bin ] && PATH=$(_pathedit "$PATH" /opt/couchbase/bin after)
 
 # Shim for console to change TITLE
 _have console && {

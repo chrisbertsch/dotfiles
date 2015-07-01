@@ -13,33 +13,37 @@ _interactive()
 # Path edit function
 _pathedit ()
 {
-	if ! echo $1 | grep -Eq "(^|:)$2($|:)" &>/dev/null ; then
-		if [ "$3" = "after" ] ; then
-			echo $1:$2
+	if ! echo "$1" | grep -Eq "(^|:)$2($|:)" &>/dev/null ; then
+		if [ -n "$1" ] ; then
+			if [ "$3" = "after" ] ; then
+				echo "$1:$2"
+			else
+				echo "$2:$1"
+			fi
 		else
-			echo $2:$1
+			echo "$2"
 		fi
 	else
-		echo $1
+		echo "$1"
 	fi
 }
 
 # Set PATH so it includes user's private bin if it exists
-[ -d ~/bin ] && PATH=$(_pathedit $PATH ~/bin after)
-[ -d ~/.local/bin ] && PATH=$(_pathedit $PATH ~/.local/bin after)
+[ -d ~/bin ] && PATH=$(_pathedit "$PATH" ~/bin after)
+[ -d ~/.local/bin ] && PATH=$(_pathedit "$PATH" ~/.local/bin after)
 
 # More paths
-[ -d /usr/local/sbin ] && PATH=$(_pathedit $PATH /usr/local/sbin)
-[ -d /usr/local/bin ] && PATH=$(_pathedit $PATH /usr/local/bin)
-[ -d /usr/sbin ] && PATH=$(_pathedit $PATH /usr/sbin)
-[ -d /usr/bin ] && PATH=$(_pathedit $PATH /usr/bin)
-[ -d /sbin ] && PATH=$(_pathedit $PATH /sbin)
-[ -d /bin ] && PATH=$(_pathedit $PATH /bin)
+[ -d /usr/local/sbin ] && PATH=$(_pathedit "$PATH" /usr/local/sbin)
+[ -d /usr/local/bin ] && PATH=$(_pathedit "$PATH" /usr/local/bin)
+[ -d /usr/sbin ] && PATH=$(_pathedit "$PATH" /usr/sbin)
+[ -d /usr/bin ] && PATH=$(_pathedit "$PATH" /usr/bin)
+[ -d /sbin ] && PATH=$(_pathedit "$PATH" /sbin)
+[ -d /bin ] && PATH=$(_pathedit "$PATH" /bin)
 
 # Man paths
 _have manpath && export MANPATH=$(manpath 2>/dev/null)
-[ -d ~/man ] && MANPATH=$(_pathedit $MANPATH ~/man after)
-[ -d ~/.local/man ] && MANPATH=$(_pathedit $MANPATH ~/.local/man after)
+[ -d ~/man ] && MANPATH=$(_pathedit "$MANPATH" ~/man after)
+[ -d ~/.local/man ] && MANPATH=$(_pathedit "$MANPATH" ~/.local/man after)
 
 # Set colors
 if _interactive && _have tput && (tput sgr0 &>/dev/null || tput me &>/dev/null) ; then
