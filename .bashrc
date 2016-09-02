@@ -73,7 +73,7 @@ shopt -s cdspell
 shopt -s checkwinsize
 
 # Bash history settings
-HISTSIZE=2000
+HISTSIZE=10000
 HISTIGNORE='&:exit:*shutdown*:*reboot*'
 HISTCONTROL='ignoreboth'
 HISTTIMEFORMAT='%F %T '
