@@ -5,3 +5,12 @@ export DISPLAY='localhost:0.0'
 # Start SSH Agent
 start_ssh_agent
 }
+
+socks_proxy()
+{
+        export AUTOSSH_PIDFILE=$(mktemp)
+        autossh -M 0 -q -f -N -o "ServerAliveInterval 15" -o "ServerAliveCountMax 3" -D $1 $2
+        trap "kill $(<$AUTOSSH_PIDFILE)" 0
+        rm $AUTOSSH_PIDFILE
+        unset AUTOSSH_PIDFILE
+}
