@@ -203,7 +203,13 @@ _prompt_builder()
 	else
 		exitcode=""
 	fi
-	PS1="${CRESET}${C03}\D{%Y-%m-%dT%H:%M:%S%z}\n${C07}[${C02}\u${C04}@${C02}\h${C04}:${pwdcolor}\w${C07}]${exitcode}${userprompt}${CRESET} "
+	# Show virtual envirmoent
+	if [ -n "$VIRTUAL_ENV" ]; then
+		virtualenv="${C07}($(basename $VIRTUAL_ENV))"
+	else
+		virtualenv=""
+	fi
+	PS1="${CRESET}${C03}\D{%Y-%m-%dT%H:%M:%S%z}\n${C07}${virtualenv}[${C02}\u${C04}@${C02}\h${C04}:${pwdcolor}\w${C07}]${exitcode}${userprompt}${CRESET} "
 	PS2="${CRESET}${continueprompt}${CRESET} "
 	# Change title
 	_set_title $title
