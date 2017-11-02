@@ -203,7 +203,7 @@ _prompt_builder()
 	else
 		exitcode=""
 	fi
-	# Show virtual envirmoent
+	# Show virtual environment
 	if [ -n "$VIRTUAL_ENV" ]; then
 		virtualenv="${C07}($(basename $VIRTUAL_ENV))"
 	else
