@@ -96,7 +96,7 @@ if _have mosh ; then
 	complete -F _ssh_hosts mssh
 fi
 
-# SSH alias with forwarding
+# SSH aliases
 alias ssh='ssh -A'
 alias xssh='ssh -X'
 alias zssh='ssh -C'
