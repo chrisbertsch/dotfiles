@@ -1,16 +1,26 @@
+# Start SSH Pageant
+start_ssh_pageant()
+{
+        if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] ; then
+                eval $(ssh-pageant -s)
+                trap "kill $SSH_PAGEANT_PID" 0
+        fi
+}
+
+# Start Auto SSH Socks Proxy
+socks_proxy()
+{
+        export AUTOSSH_PIDFILE=$(mktemp)
+        autossh -M 0 -q -f -N -o "ServerAliveInterval 15" -o "ServerAliveCountMax 3" -D 1080 $1
+        trap "kill $(<$AUTOSSH_PIDFILE)" 0
+        rm $AUTOSSH_PIDFILE
+        unset AUTOSSH_PIDFILE
+}
+
 _interactive && {
 # Set DISPLAY
 export DISPLAY='localhost:0.0'
 
-# Start SSH Agent
-start_ssh_agent
-}
-
-socks_proxy()
-{
-        export AUTOSSH_PIDFILE=$(mktemp)
-        autossh -M 0 -q -f -N -o "ServerAliveInterval 15" -o "ServerAliveCountMax 3" -D $1 $2
-        trap "kill $(<$AUTOSSH_PIDFILE)" 0
-        rm $AUTOSSH_PIDFILE
-        unset AUTOSSH_PIDFILE
+# Start SSH Pageant
+start_ssh_pageant
 }
