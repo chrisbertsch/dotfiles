@@ -90,6 +90,11 @@ elif [ -r ~/bash_completion ] ; then
 fi
 }
 
+# GnuPG
+_interactive && {
+export GPG_TTY=$(tty)
+}
+
 # Mosh alias
 if _have mosh ; then
 	alias mssh='mosh'
@@ -218,7 +223,7 @@ _prompt_builder()
 # Change screen/tmux window and xterm/rxvt title names
 _set_title()
 {
-	if [ -n "$1" ] ; then
+	if [ -n "$1" ] && [ -t 1 ] ; then
 		case $TERM in
 			screen*)
 				echo -ne "\ek$1\e\\"
@@ -268,7 +273,6 @@ reset_ssh_agent()
 start_gpg_agent()
 {
 	if [ -z "$GPG_AGENT_INFO" ] || [ ! -S $(echo $GPG_AGENT_INFO | cut -d: -f 1) ] ; then
-		export GPG_TTY=$(tty)
 		eval $(gpg-agent --daemon)
 		trap "kill $(echo $GPG_AGENT_INFO | cut -d: -f 2)" 0
 	fi
