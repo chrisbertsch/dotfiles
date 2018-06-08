@@ -262,7 +262,7 @@ start_ssh_agent()
 reset_ssh_agent()
 {
 	if [ -n "$TMUX" ] && [ ! -S "$SSH_AUTH_SOCK" ] ; then
-		local new_ssh_auth_sock=$(tmux showenv | grep '^SSH_AUTH_SOCK' | cut -d = -f 2)
+		local new_ssh_auth_sock=$(tmux showenv SSH_AUTH_SOCK | cut -d = -f 2)
 		if [ -n "$new_ssh_auth_sock" ] && [ -S "$new_ssh_auth_sock" ] ; then
 			SSH_AUTH_SOCK=$new_ssh_auth_sock
 		fi
@@ -273,7 +273,7 @@ reset_ssh_agent()
 start_gpg_agent()
 {
 	if [ -z "$GPG_AGENT_INFO" ] || [ ! -S $(echo $GPG_AGENT_INFO | cut -d: -f 1) ] ; then
-		eval $(gpg-agent --daemon)
+		eval $(gpg-agent -s --daemon)
 		trap "kill $(echo $GPG_AGENT_INFO | cut -d: -f 2)" 0
 	fi
 }
